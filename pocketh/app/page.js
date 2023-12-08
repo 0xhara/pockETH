@@ -10,15 +10,17 @@ import {
   SafeAuthInitOptions,
 } from "@safe-global/auth-kit";
 import { Badge } from "@/components/ui/badge";
+import { ethers } from "ethers";
+import { EthersAdapter, SafeFactory } from "@safe-global/protocol-kit";
 
 export default function Home() {
   const safeAuthInitOptions = {
     showWidgetButton: true, // Set to true to show the SafeAuth widget button
     chainConfig: {
       blockExplorerUrl: "https://etherscan.io", // The block explorer URL
-      chainId: "0x5", // The chain ID
-      displayName: "Ethereum Goerli", // The chain name
-      rpcTarget: "https://rpc.ankr.com/eth_goerli", // The RPC target
+      chainId: "0x13881", // The chain ID
+      displayName: "Mumbai", // The chain name
+      rpcTarget: "https://endpoints.omniatech.io/v1/matic/mumbai/public", // The RPC target
       ticker: "ETH", // The chain ticker
       tickerName: "Ethereum", // The chain ticker name
     },
@@ -29,6 +31,8 @@ export default function Home() {
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [eoa, setEoa] = useState(null);
+  const [safeAd, setSafeAd] = useState("");
 
   async function init() {
     try {
@@ -53,7 +57,9 @@ export default function Home() {
 
   const login = async () => {
     const loginValue = await safeAuthPack.signIn();
+    setEoa(loginValue.eoa);
     console.log(loginValue, "loginValue");
+    // console.log(eoa, "this is eoa");
     // console.log(safeAuthSignInResponse, "safeAuthSignInResponse");
   };
 
@@ -68,9 +74,68 @@ export default function Home() {
 
     console.log(safeAuthSignOutResponse, "safeAuthSignOutResponse");
   };
+
+  // const providerDetails = async () => {
+  //   // Wrap EIP-1193 provider with ethers
+  //   const provider = new ethers.BrowserProvider(safeAuthPack.getProvider());
+  //   const signer = provider.getSigner();
+
+  //   // Create the Safe EthersAdapter
+  //   const ethAdapter = new EthersAdapter({
+  //     ethers,
+  //     signerOrProvider: signer || provider,
+  //   });
+
+  //   const safeFactory = await SafeFactory.create({
+  //     ethAdapter,
+  //   });
+
+  //   const owners = [eoa];
+
+  //   const safeAccountConfig = {
+  //     owners,
+  //     threshold: 1,
+  //   };
+  //   const safeSdk = await safeFactory.deploySafe({ safeAccountConfig });
+
+  //   const safeAddress = safeFactory.getAddress();
+
+  //   console.log(safeAddress, "this is safeAddress");
+  // };
+
+  // Instantiate the protocolKit
+  // const protocolKit = await Safe.create({
+  //   ethAdapter,
+  //   safeAddress,
+  // })
+
+  // Create a Safe transaction with the provided parameters
+  // const safeTransactionData = {
+  //   to: `${ethAddress}`,
+  //   data: "0x",
+  //   value: ethers.parseUnits("0.0001", "ether").toString(),
+  // };
+
+  // const safeTransaction = await protocolKit.createTransaction({
+  //   transactions: [safeTransactionData],
+  // })
+
+  // Sign the transaction if the Safe have several owners
+  // safeTransaction = await protocolKit1.signTransaction(safeTransaction)
+  // safeTransaction = await protocolKit2.signTransaction(safeTransaction)
+
+  // Execute the transaction
+  // await protocolKit.executeTransaction(safeTransaction)
+
   return (
     <main className="min-h-screen flex justify-center items-center min-w-screen">
-      <Button onClick={login}>Login</Button>
+      <div className="flex flex-col gap-4">
+        <Button onClick={login}>Login</Button>
+        <Button onClick={getUserInfo}>Get User Info</Button>
+        {/* <Button onClick={providerDetails}>Provider</Button> */}
+
+        <span>safeAd</span>
+      </div>
       <div className="flex gap-4 max-w-[1440px] w-full">
         <div className="flex flex-col gap-4 items-start ">
           <Badge>Team Name</Badge>
