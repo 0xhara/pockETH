@@ -46,7 +46,7 @@ function page() {
         <div className="flex flex-col gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <>
-              <Link href={`/pocket/${i}`}>
+              <Link href={`/pocket/?id=${i}`}>
                 <Card className="p-2 gap-4 flex cursor-pointer justify-between pl-4 pr-4">
                   <div className="flex gap-4">
                     <Avatar>

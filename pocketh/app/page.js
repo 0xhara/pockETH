@@ -50,23 +50,23 @@ export default function Home() {
   //   getUserInfo();
   // }, []);
 
-  const login = async () => {
-    return await safeAuthPack.signIn();
+  // const login = async () => {
+  //   return await safeAuthPack.signIn();
 
-    console.log(safeAuthSignInResponse, "safeAuthSignInResponse");
-  };
+  //   console.log(safeAuthSignInResponse, "safeAuthSignInResponse");
+  // };
 
-  const getUserInfo = async () => {
-    const safeAuthUserInfoResponse = await safeAuthPack?.getUserInfo();
+  // const getUserInfo = async () => {
+  //   const safeAuthUserInfoResponse = await safeAuthPack?.getUserInfo();
 
-    console.log(safeAuthUserInfoResponse, "safeAuthUserInfoResponse User Info");
-  };
+  //   console.log(safeAuthUserInfoResponse, "safeAuthUserInfoResponse User Info");
+  // };
 
-  const logout = async () => {
-    const safeAuthSignOutResponse = await safeAuthPack?.signOut();
+  // const logout = async () => {
+  //   const safeAuthSignOutResponse = await safeAuthPack?.signOut();
 
-    console.log(safeAuthSignOutResponse, "safeAuthSignOutResponse");
-  };
+  //   console.log(safeAuthSignOutResponse, "safeAuthSignOutResponse");
+  // };
   return (
     <main className="min-h-screen flex justify-center items-center min-w-screen">
       <div className="flex gap-4 max-w-[1440px] w-full">
