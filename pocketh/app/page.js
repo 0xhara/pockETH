@@ -9,6 +9,7 @@ import {
   SafeAuthConfig,
   SafeAuthInitOptions,
 } from "@safe-global/auth-kit";
+import { Badge } from "@/components/ui/badge";
 
 export default function Home() {
   const safeAuthInitOptions = {
@@ -23,29 +24,27 @@ export default function Home() {
     },
   };
 
-  const safeAuthPack = new SafeAuthPack({
-    txServiceUrl: "https://safe-transaction-mainnet.safe.global",
-  });
+  // const safeAuthPack = new SafeAuthPack({
+  //   txServiceUrl: "https://safe-transaction-mainnet.safe.global",
+  // });
 
-  // console.log(safeAuthPack?.isAuthenticated, "safeAuthPack");
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // async function init() {
+  //   try {
+  //     return await safeAuthPack.init(safeAuthInitOptions);
+  //     // const { eoa, safes } = await safeAuthPack.signIn();
+  //   } catch (error) {
+  //     console.error("Error initializing SafeAuthPack:", error);
+  //   }
+  // }
 
-  async function init() {
-    try {
-      return await safeAuthPack.init(safeAuthInitOptions);
-      // const { eoa, safes } = await safeAuthPack.signIn();
-    } catch (error) {
-      console.error("Error initializing SafeAuthPack:", error);
-    }
-  }
-
-  useEffect(() => {
-    init().then(() => {
-      setIsAuthenticated(safeAuthPack?.isAuthenticated);
-      console.log(safeAuthPack?.isAuthenticated, "safeAuthPack Authenticated");
-    });
-  }, []);
+  // useEffect(() => {
+  //   init().then(() => {
+  //     setIsAuthenticated(safeAuthPack?.isAuthenticated);
+  //     console.log(safeAuthPack?.isAuthenticated, "safeAuthPack Authenticated");
+  //   });
+  // }, []);
 
   // useEffect(() => {
   //   getUserInfo();
@@ -69,10 +68,27 @@ export default function Home() {
     console.log(safeAuthSignOutResponse, "safeAuthSignOutResponse");
   };
   return (
-    <main className="dark">
-      <p>Hello</p>
-      <Button onClick={login}>Login</Button>
-      {isAuthenticated && <Button onClick={logout}>Logout</Button>}{" "}
+    <main className="min-h-screen flex justify-center items-center min-w-screen">
+      <div className="flex gap-4 max-w-[1440px] w-full">
+        <div className="flex flex-col gap-4 items-start ">
+          <Badge>Team Name</Badge>
+          <span className="text-[3rem] font-bold monster">
+            Decentralized Expense Harmony
+          </span>
+          <span className="font-light">
+            Empower Your Group Finances with Blockchain for Seamless Event
+            Spending
+          </span>
+
+          <div className="flex gap-4">
+            <Button>Get Started</Button>
+            <Button>View Github</Button>
+          </div>
+        </div>
+        <div>
+          <img src="https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png" />
+        </div>
+      </div>
     </main>
   );
 }
