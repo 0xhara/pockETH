@@ -23,31 +23,44 @@ export default function Home() {
     },
   };
 
-  const safeAuthPack = new SafeAuthPack();
+  const safeAuthPack = new SafeAuthPack({
+    txServiceUrl: "https://safe-transaction-mainnet.safe.global",
+  });
 
   // console.log(safeAuthPack?.isAuthenticated, "safeAuthPack");
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    async function init() {
-      try {
-        await safeAuthPack.init(safeAuthInitOptions);
-      } catch (error) {
-        console.error("Error initializing SafeAuthPack:", error);
-      }
+  async function init() {
+    try {
+      return await safeAuthPack.init(safeAuthInitOptions);
+      // const { eoa, safes } = await safeAuthPack.signIn();
+    } catch (error) {
+      console.error("Error initializing SafeAuthPack:", error);
     }
-    init();
+  }
+
+  useEffect(() => {
+    init().then(() => {
+      setIsAuthenticated(safeAuthPack?.isAuthenticated);
+      console.log(safeAuthPack?.isAuthenticated, "safeAuthPack Authenticated");
+    });
   }, []);
 
+  // useEffect(() => {
+  //   getUserInfo();
+  // }, []);
+
   const login = async () => {
-    const safeAuthSignInResponse = await safeAuthPack.signIn();
+    return await safeAuthPack.signIn();
 
     console.log(safeAuthSignInResponse, "safeAuthSignInResponse");
   };
 
   const getUserInfo = async () => {
     const safeAuthUserInfoResponse = await safeAuthPack?.getUserInfo();
+
+    console.log(safeAuthUserInfoResponse, "safeAuthUserInfoResponse User Info");
   };
 
   const logout = async () => {
@@ -59,8 +72,7 @@ export default function Home() {
     <main className="dark">
       <p>Hello</p>
       <Button onClick={login}>Login</Button>
-
-      <Button onClick={logout}>Logout</Button>
+      {isAuthenticated && <Button onClick={logout}>Logout</Button>}{" "}
     </main>
   );
 }
