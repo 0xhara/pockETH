@@ -72,7 +72,7 @@ export default function Home() {
       <div className="flex gap-4 max-w-[1440px] w-full">
         <div className="flex flex-col gap-4 items-start ">
           <Badge>Team Name</Badge>
-          <span className="text-[3rem] font-bold monster">
+          <span className="text-[4rem] font-bold monster">
             Decentralized Expense Harmony
           </span>
           <span className="font-light">
@@ -80,9 +80,9 @@ export default function Home() {
             Spending
           </span>
 
-          <div className="flex gap-4">
+          <div className="flex mt-[2rem] gap-4">
             <Button>Get Started</Button>
-            <Button>View Github</Button>
+            <Button variant="outlined">View Github</Button>
           </div>
         </div>
         <div>
