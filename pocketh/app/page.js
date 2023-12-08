@@ -24,51 +24,53 @@ export default function Home() {
     },
   };
 
-  // const safeAuthPack = new SafeAuthPack({
-  //   txServiceUrl: "https://safe-transaction-mainnet.safe.global",
-  // });
+  const safeAuthPack = new SafeAuthPack({
+    // txServiceUrl: "https://safe-transaction-mainnet.safe.global",
+  });
 
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // async function init() {
-  //   try {
-  //     return await safeAuthPack.init(safeAuthInitOptions);
-  //     // const { eoa, safes } = await safeAuthPack.signIn();
-  //   } catch (error) {
-  //     console.error("Error initializing SafeAuthPack:", error);
-  //   }
-  // }
+  async function init() {
+    try {
+      await safeAuthPack.init(safeAuthInitOptions);
+      // const { eoa, safes } = await safeAuthPack.signIn();
+    } catch (error) {
+      console.error("Error initializing SafeAuthPack:", error);
+    }
+  }
 
-  // useEffect(() => {
-  //   init().then(() => {
-  //     setIsAuthenticated(safeAuthPack?.isAuthenticated);
-  //     console.log(safeAuthPack?.isAuthenticated, "safeAuthPack Authenticated");
-  //   });
-  // }, []);
+  useEffect(() => {
+    init().then(() => {
+      console.log("SafeAuthPack initialized", safeAuthPack);
+      // setIsAuthenticated(safeAuthPack?.isAuthenticated);
+      // console.log(safeAuthPack?.isAuthenticated, "safeAuthPack Authenticated");
+    });
+  }, []);
 
   // useEffect(() => {
   //   getUserInfo();
   // }, []);
 
-  // const login = async () => {
-  //   return await safeAuthPack.signIn();
+  const login = async () => {
+    const loginValue = await safeAuthPack.signIn();
+    console.log(loginValue, "loginValue");
+    // console.log(safeAuthSignInResponse, "safeAuthSignInResponse");
+  };
 
-  //   console.log(safeAuthSignInResponse, "safeAuthSignInResponse");
-  // };
+  const getUserInfo = async () => {
+    const safeAuthUserInfoResponse = await safeAuthPack?.getUserInfo();
 
-  // const getUserInfo = async () => {
-  //   const safeAuthUserInfoResponse = await safeAuthPack?.getUserInfo();
+    console.log(safeAuthUserInfoResponse, "safeAuthUserInfoResponse User Info");
+  };
 
-  //   console.log(safeAuthUserInfoResponse, "safeAuthUserInfoResponse User Info");
-  // };
+  const logout = async () => {
+    const safeAuthSignOutResponse = await safeAuthPack?.signOut();
 
-  // const logout = async () => {
-  //   const safeAuthSignOutResponse = await safeAuthPack?.signOut();
-
-  //   console.log(safeAuthSignOutResponse, "safeAuthSignOutResponse");
-  // };
+    console.log(safeAuthSignOutResponse, "safeAuthSignOutResponse");
+  };
   return (
     <main className="min-h-screen flex justify-center items-center min-w-screen">
+      <Button onClick={login}>Login</Button>
       <div className="flex gap-4 max-w-[1440px] w-full">
         <div className="flex flex-col gap-4 items-start ">
           <Badge>Team Name</Badge>
