@@ -392,10 +392,6 @@ export default function Home() {
   useEffect(() => {
     const lenis = new Lenis();
 
-    lenis.on("scroll", (e) => {
-      console.log(e);
-    });
-
     function raf(time) {
       lenis.raf(time);
       requestAnimationFrame(raf);
@@ -444,40 +440,43 @@ export default function Home() {
 
           {/* <span>safeAd</span> */}
         </div>
-        <div className="flex gap-4 items-center min-h-[75vh] max-w-[1440px] w-full">
-          <div className="flex flex-col justify-center mt-[10rem] min-h-[600px] gap-4 items-start ">
+        <div className="flex lg:flex-row flex-col-reverse p-4 lg:p-0 lg:gap-4 items-center lg:min-h-[75vh] max-w-[1440px] w-full">
+          <div className="flex flex-col justify-center lg:mt-[10rem] min-h-[500px] lg:min-h-[600px] gap-4 items-start ">
             <Badge>Team Name</Badge>
-            <span className="text-[4rem] font-bold monster">
+            <span className=" text-[2rem] lg:text-[4rem] font-bold monster">
               Decentralized Expense Harmony
             </span>
-            <span className="font-light">
+            <span className="font-light text-[14px] lg:text-normal">
               Empower Your Group Finances with Blockchain for Seamless Event
               Spending
             </span>
 
-            <div className="flex mt-[2rem] gap-4">
+            <div className="flex lg:flex-row flex-col mt-[2rem] gap-4">
               <Link href={"/login"}>
                 <Button className="flex gap-2 items-center">
                   <Leaf /> Get Started
                 </Button>
               </Link>
-              <Button className="flex gap-2 items-center" variant="outlined">
+              <Button
+                className="flex gap-2 border-[1px] border-white items-center"
+                variant="outlined"
+              >
                 <Github />
                 View Code on Github
               </Button>
             </div>
           </div>
-          <div>
+          <div className="w-[70%] lg:w-auto">
             <img src="https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png" />
           </div>
         </div>
 
-        <div className="w-full items-center flex flex-col gap-12 max-w-[1440px] mt-[8rem]">
-          <span className="text-[3rem] font-bold monster">
-            How does <Logo className={"text-[3rem]"} /> work?
+        <div className="w-full items-center flex flex-col gap-12 max-w-[1440px] mt-[4rem] lg:mt-[8rem]">
+          <span className="text-[1.5rem] lg:text-[3rem] font-bold monster">
+            How does <Logo className={"text-[1.5rem] lg:text-[3rem]"} /> work?
           </span>
 
-          <div className="w-full gap-12 grid grid-cols-3">
+          <div className="w-full gap-12 grid grid-cols-1 p-4 lg:p-0 lg:grid-cols-3">
             {howItWorks.map((_, i) => (
               <>
                 <Card
@@ -497,8 +496,8 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="w-full mt-[4rem] gap-8 mb-[4rem]">
-            <div className="flex items-center justify-center gap-4">
+          <div className="p-4 lg:p-0 w-full mt-[4rem] lg:gap-8 mb-[4rem]">
+            <div className="flex lg:flex-row flex-col items-center justify-center lg:gap-4">
               <div className="flex w-full flex-col gap-8">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <>
@@ -515,8 +514,8 @@ export default function Home() {
               </div>
               <img className="lg:w-[48%]" src={"m1.png"} />
             </div>
-            <div className="flex items-center text-right flex-row-reverse justify-center gap-4">
-              <div className="flex w-full flex-col gap-8">
+            <div className="flex   flex-col items-center lg:text-right lg:flex-row-reverse justify-center gap-4">
+              <div className="flex w-full  flex-col gap-8">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <>
                     <div className="flex flex-col gap-2">
@@ -535,15 +534,16 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-[4rem] max-w-[1440px] items-center flex flex-col gap-[4rem] mb-[4rem]">
-          <span className="text-[3rem] font-bold">
-            How can you use <Logo className={"text-[3rem]"} /> ?
+        <div className="mt-[4rem] max-w-[1440px] items-center flex flex-col lg:gap-[4rem] mb-[4rem]">
+          <span className="text-[1.5rem] lg:text-[3rem] font-bold">
+            How can you use <Logo className={"text-[1.5rem] lg:text-[3rem]"} />{" "}
+            ?
           </span>
 
-          <div className="w-[70%] flex items-center justify-center flex-wrap gap-6">
+          <div className="w-[70%] flex items-center justify-center flex-wrap mt-[2rem] lg:mt-0 gap-2 lg:gap-6">
             {myArrayWithIcons.map((_, i) => (
               <>
-                <Card className="p-4 hover:bg-secondary monstser transition-all duration-200 ease-in-out cursor-pointer items-center justify-center pl-6 pr-6 text-[1.35rem] font-bold tracking-wider">
+                <Card className="lg:p-4 p-2 hover:bg-secondary monstser transition-all duration-200 ease-in-out cursor-pointer items-center justify-center lg:pl-6 lg:pr-6 lg:text-[1.35rem] lg:font-bold tracking-wider">
                   {_.icon} {_.item}
                 </Card>
               </>
@@ -551,12 +551,12 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="w-full items-center flex flex-col gap-12 max-w-[1440px] mt-[4rem] mb-[4rem]">
-          <span className="text-[3rem] font-bold monster">
+        <div className="w-full p-4 lg:p-0 items-center flex flex-col gap-12 max-w-[1440px] mt-[4rem] mb-[4rem]">
+          <span className="text-[1.5rem] lg:text-[3rem] font-bold monster">
             Expense Pooling Made Easy <span className="text-accent">!!</span>
           </span>
 
-          <div className="w-full gap-12 grid grid-cols-3">
+          <div className="w-full gap-12 grid lg:grid-cols-3">
             {expensePooling.map((_, i) => (
               <>
                 <Card
@@ -576,12 +576,12 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <div className="w-full items-center flex flex-col gap-12 max-w-[1440px] mt-[4rem] mb-[4rem]">
-          <span className="text-[3rem] font-bold monster">
+        <div className="w-full items-center flex flex-col gap-12 max-w-[1440px] lg:mt-[4rem] lg:mb-[4rem]">
+          <span className="text-[1.5rem] lg:text-[3rem] font-bold monster">
             Frequently Asked <span className="text-accent">Questions</span>
           </span>
 
-          <div className="w-full gap-12 flex flex-col">
+          <div className="w-full lg:gap-12 p-4 lg:p-0 flex flex-col">
             {faqList.map((_, i) => (
               <>
                 <FaqList title={_.question} content={_.answer} />
@@ -591,7 +591,7 @@ export default function Home() {
         </div>
       </main>
 
-      <footer className="w-full flex items-end justify-center pt-12 pb-8 bg-black">
+      <footer className="w-full flex items-end justify-center p-4 lg:p-0 lg:pt-12 pb-8 backdrop-blur-3xl bg-black">
         <div className="flex flex-col gap-8 max-w-[1440px] w-full">
           <Logo />
           <div className="grid grid-cols-3 gap-4">
@@ -602,9 +602,10 @@ export default function Home() {
                     <>
                       <Link
                         href={_.url}
-                        className="text-[18px] flex gap-2 items-center text-white"
+                        className="text-[14px] lg:text-[18px] flex gap-2 items-center text-white"
                       >
-                        {_.text} <ExternalLink className="h-4 w-4" />
+                        {_.text}{" "}
+                        <ExternalLink className="h-4 hidden lg:block w-4" />
                       </Link>
                     </>
                   ))}
