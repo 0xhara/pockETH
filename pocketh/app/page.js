@@ -33,7 +33,7 @@ import { abi } from "../lib/abi.json";
 const chain = polygonMumbai;
 
 import { Web3Auth } from "@web3auth/modal";
-import { Github, Leaf } from "lucide-react";
+import { Copyright, ExternalLink, Github, Leaf } from "lucide-react";
 import Link from "next/link";
 import Logo from "@/components/logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -368,6 +368,31 @@ export default function Home() {
     },
   ];
 
+  const footerLinks = [
+    [
+      { url: "https://github.com/yourusername", text: "GitHub" },
+      { url: "https://twitter.com/yourtwitter", text: "Twitter" },
+      { url: "https://www.instagram.com/yourinstagram", text: "Instagram" },
+      { url: "https://www.facebook.com/yourfacebook", text: "Facebook" },
+      { url: "https://www.linkedin.com/in/yourlinkedin", text: "LinkedIn" },
+    ],
+    [
+      { url: "https://www.yourwebsite.com/terms", text: "Terms of Service" },
+      { url: "https://www.yourwebsite.com/privacy", text: "Privacy Policy" },
+      { url: "https://www.yourwebsite.com/contact", text: "Contact Us" },
+      { url: "https://www.yourwebsite.com/about", text: "About Us" },
+      { url: "https://www.yourwebsite.com/faq", text: "FAQs" },
+    ],
+    [
+      { url: "https://www.yourwebsite.com/terms", text: "Connect on LinkedIn" },
+      { url: "https://www.yourwebsite.com/privacy", text: "Privacy Policy" },
+    ],
+  ];
+
+  // Accessing an example link and text
+  console.log(footerLinks[0][0].url); // Output: https://github.com/yourusername
+  console.log(footerLinks[0][0].text); // Output: GitHub
+
   // Accessing elements in the array
   console.log(myArrayWithIcons[0].item); // Outputs: Rent
   console.log(myArrayWithIcons[0].icon); // Outputs: 🏠
@@ -551,8 +576,35 @@ export default function Home() {
         </div>
       </main>
 
-      <footer className="w-full flex items-end justify-center min-h-[400px] bg-black">
-        <div className="bg-white max-w-[1440px] w-full"></div>
+      <footer className="w-full flex items-end justify-center pt-12 pb-8 bg-black">
+        <div className="flex flex-col gap-8 max-w-[1440px] w-full">
+          <Logo />
+          <div className="grid grid-cols-3 gap-4">
+            {footerLinks.map((list, i) => {
+              return (
+                <div className="flex flex-col gap-4">
+                  {list.map((_, i) => (
+                    <>
+                      <Link
+                        href={_.url}
+                        className="text-[18px] flex gap-2 items-center text-white"
+                      >
+                        {_.text} <ExternalLink className="h-4 w-4" />
+                      </Link>
+                    </>
+                  ))}
+                </div>
+              );
+            })}
+          </div>
+          <div>
+            <div className="flex items-center gap-2 justify-center border-t-[1px] pt-4">
+              {/* <Icon className="h-4 w-4" src="copyright-icon.png" /> */}
+              <Copyright />
+              Made with ❤️ in ETHIndia 2023
+            </div>
+          </div>
+        </div>
       </footer>
     </>
   );
