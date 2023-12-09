@@ -33,6 +33,10 @@ import { abi } from "../lib/abi.json";
 const chain = polygonMumbai;
 
 import { Web3Auth } from "@web3auth/modal";
+import { Github, Leaf } from "lucide-react";
+import Link from "next/link";
+import Logo from "@/components/logo";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // see https://web3auth.io/docs/quick-start for more info
 const web3auth = new Web3Auth({
@@ -262,8 +266,31 @@ export default function Home() {
     // await protocolKit.executeTransaction(safeTransaction)
   };
 
+  const howItWorks = [
+    {
+      title: "Decentralized Ledger at Work",
+      description: "Explore the Inner Workings of our Blockchain DApp",
+      image:
+        "https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png",
+    },
+    {
+      title: "From Transactions to Transparency",
+      description:
+        "Unraveling the Mechanics of Seamless Financial Collaboration",
+      image:
+        "https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png",
+    },
+    {
+      title: "Empowering Users, Ensuring Security",
+      description:
+        "A Glimpse into the Functionality and Safety Measures of our Platform",
+      image:
+        "https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png",
+    },
+  ];
+
   return (
-    <main className="min-h-screen flex justify-center items-center min-w-screen">
+    <main className="min-h-screen flex flex-col justify-center items-center min-w-screen">
       {/* <div>
         <Card>
           <h1>magic -alchemy</h1>
@@ -305,12 +332,45 @@ export default function Home() {
           </span>
 
           <div className="flex mt-[2rem] gap-4">
-            <Button>Get Started</Button>
-            <Button variant="outlined">View Github</Button>
+            <Link href={"/login"}>
+              <Button className="flex gap-2 items-center">
+                <Leaf /> Get Started
+              </Button>
+            </Link>
+            <Button className="flex gap-2 items-center" variant="outlined">
+              <Github />
+              View Code on Github
+            </Button>
           </div>
         </div>
         <div>
           <img src="https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png" />
+        </div>
+      </div>
+
+      <div className="w-full items-center flex flex-col gap-12 max-w-[1440px] mt-[8rem]">
+        <span className="text-[3rem] font-bold monster">
+          How does <Logo className={"text-[3rem]"} /> work?
+        </span>
+
+        <div className="w-full gap-12 grid grid-cols-3">
+          {howItWorks.map((_, i) => (
+            <>
+              <Card
+                className="w-full  backdrop-blur-sm bg-white/20 border-black flex flex-col gap-4 p-4 pl-8 pr-8 min-h-[200px] hover:bg-slate-600 transition-all ease-in-out duration-300"
+                key={i}
+              >
+                <Avatar className="h-[4rem] w-[4rem]">
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <span className="text-[1.5rem] font-bold monster">
+                  {_.title}
+                </span>
+                <span className="font-light">{_.description}</span>
+              </Card>
+            </>
+          ))}
         </div>
       </div>
     </main>

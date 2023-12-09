@@ -1,12 +1,11 @@
 import { Bitcoin, Github, Leaf } from "lucide-react";
 import { Button } from "./ui/button";
+import Logo from "./logo";
 
 function Header() {
   return (
-    <header className="w-full justify-between flex items-center top-0 left-0 right-0 sticky p-4 pl-[4rem] pr-[4rem]">
-      <span className="monster text-[2rem] font-bold tracking-wider">
-        pock<span className="text-accent font-bold">ETH</span>
-      </span>
+    <header className="w-full z-[999] justify-between flex items-center top-0 left-0 right-0 sticky p-4 pl-[4rem] pr-[4rem]">
+      <Logo />
 
       <div className="flex gap-4">
         <Button variant="outlined" className="border-white flex gap-2 border">
