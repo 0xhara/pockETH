@@ -55,6 +55,7 @@ const web3auth = new Web3Auth({
 
 import m1 from "../public/m1.png";
 import FaqList from "@/components/faq";
+import Lenis from "@studio-freight/lenis";
 
 export default function Home() {
   const [provider, setProvider] = useState(null);
@@ -388,6 +389,20 @@ export default function Home() {
       { url: "https://www.yourwebsite.com/privacy", text: "Privacy Policy" },
     ],
   ];
+  useEffect(() => {
+    const lenis = new Lenis();
+
+    lenis.on("scroll", (e) => {
+      console.log(e);
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+  }, []);
 
   // Accessing an example link and text
   console.log(footerLinks[0][0].url); // Output: https://github.com/yourusername
