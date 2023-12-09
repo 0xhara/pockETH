@@ -19,6 +19,8 @@ import { polygonMumbai } from "viem/chains";
 import { WalletClientSigner } from "@alchemy/aa-core";
 // import { web3authSigner } from "./web3Auth";
 // import { web3auth } from "../lib/action/main";
+import { ethers } from "ethers";
+
 import {
   createWalletClient,
   custom,
@@ -29,7 +31,8 @@ import {
 import { encodeFunctionData } from "viem";
 import { Card } from "@/components/ui/card";
 
-import { abi } from "../lib/abi.json";
+import { abi2 } from "../lib/pocketAbi.json";
+import { abi } from "../lib/factoryAbi.json";
 const chain = polygonMumbai;
 
 import { Web3Auth } from "@web3auth/modal";
@@ -46,7 +49,8 @@ const web3auth = new Web3Auth({
   chainConfig: {
     chainNamespace: "eip155",
     chainId: "0x13881",
-    rpcTarget: "https://rpc-mumbai.maticvigil.com/",
+    rpcTarget:
+      "https://polygon-mumbai.g.alchemy.com/v2/N_-JU1B2XbGAPiCpCE0CSv7Y9P5CFP-D",
     //"https://rpc.ankr.com/eth"
     displayName: "Polygon Mumbai",
     ticker: "MATIC",
@@ -62,14 +66,14 @@ export default function Home() {
   const [owner, setOwner] = useState(null);
   const [address, setAddress] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(null); //addresses of pockets
+  const [pocketsData, setPocketsData] = useState([]);
   const [client, setClient] = useState(null);
 
   //   const [web3AuthSigner,setWeb3AuthSigner]=useState(null);
 
-  console.log("client side abi ", chain);
-
   useEffect(() => {
+    // console.log("abi is ", abi);
     const init = async () => {
       await web3auth.initModal();
       const temp_client = createPublicClient({
@@ -81,31 +85,30 @@ export default function Home() {
     init();
   }, []);
 
-  useEffect(() => {
-    if (owner) {
-      //get Alchemy provider from web3Auth signer
-      console.log("inside");
-      const getProvider = async () => {
-        console.log("inside get provider", chain);
-        const fetch_prov = new AlchemyProvider({
-          chain,
-          apiKey: "N_-JU1B2XbGAPiCpCE0CSv7Y9P5CFP-D",
-        }).connect(
-          (rpcClient) =>
-            new LightSmartContractAccount({
-              chain: rpcClient.chain,
-              owner: owner, // this is link to web3
-              factoryAddress: getDefaultLightAccountFactoryAddress(chain),
-              rpcClient,
-            })
-        );
-        setProvider(fetch_prov);
-      };
-      getProvider();
-    } else {
-      console.log("no owner");
-    }
-  }, [owner]);
+  // useEffect(() => {
+  //   if (owner) {
+  //     //get Alchemy provider from web3Auth signer
+  //     console.log("inside");
+  //     const getProvider = async () => {
+  //       const fetch_prov = new AlchemyProvider({
+  //         apiKey: "N_-JU1B2XbGAPiCpCE0CSv7Y9P5CFP-D",
+  //         chain,
+  //       }).connect(
+  //         (rpcClient) =>
+  //           new LightSmartContractAccount({
+  //             chain: rpcClient.chain,
+  //             owner: owner, // this is link to web3
+  //             factoryAddress: getDefaultLightAccountFactoryAddress(chain),
+  //             rpcClient,
+  //           })
+  //       );
+  //       setProvider(fetch_prov);
+  //     };
+  //     getProvider();
+  //   } else {
+  //     console.log("no owner");
+  //   }
+  // }, [owner]);
 
   useEffect(() => {
     if (provider) {
@@ -139,7 +142,7 @@ export default function Home() {
 
   const handleDisconnect = async () => {
     await web3auth.logout();
-    setProvider(null);
+    // setProvider(null);
     setOwner(null);
     setIsConnected(false);
   };
@@ -148,18 +151,19 @@ export default function Home() {
     //use this block for sending write requests
     const uoCallData = encodeFunctionData({
       abi: abi,
-      functionName: "incrementCount",
+      functionName: "createPocket",
+      args: ["abcdef12", "zk", 10],
     });
 
-    provider?.withAlchemyGasManager({
+    provider.withAlchemyGasManager({
       policyId: "c1e552f7-5557-42aa-8a24-0c55895f35db", // replace with your policy id, get yours at https://dashboard.alchemy.com/
     });
-    const uo = await provider?.sendUserOperation({
-      target: "0x464251C90969F21c82C57Da3001eEd7019AEF646",
+    const uo = await provider.sendUserOperation({
+      target: "0x2BeC4b3df9362A60a73A36f1D04208aBe542a3a7", //factory contract
       data: uoCallData,
     });
 
-    const txHash = await provider?.waitForUserOperationTransaction(uo.hash);
+    const txHash = await provider.waitForUserOperationTransaction(uo.hash);
 
     console.log(txHash, uo);
     readRequest();
@@ -168,15 +172,63 @@ export default function Home() {
     //use this block for sending read requests.it uses publicClient.
 
     // console.log("client is ",client)
-    const d = Number(
-      await client.readContract({
-        address: "0x464251C90969F21c82C57Da3001eEd7019AEF646",
-        abi: abi,
-        functionName: "count",
-      })
-    );
-    setData(d);
+    const pockets = await client.readContract({
+      address: "0x2BeC4b3df9362A60a73A36f1D04208aBe542a3a7",
+      abi: abi,
+      functionName: "getPocketsByOwner",
+      args: [address],
+    });
+    setData(pockets);
   };
+
+  useEffect(() => {
+    if (data) {
+      console.log("data is ", data);
+      const fetchData = async () => {
+        let pocketDataArray = [];
+        for (let i = 0; i < data.length; i++) {
+          const pocketData = await fetchVariables(data[i].toString());
+          console.log(
+            data[i].toString(),
+            "this is where we are getting single item"
+          );
+          pocketDataArray.push(pocketData);
+        }
+        setPocketsData(pocketDataArray);
+        console.log("fetching pockets data");
+      };
+      fetchData();
+    }
+  }, [data]);
+
+  async function fetchVariables(PocketContractAddress) {
+    // Initialize the ethers.js contract object
+    const Rpcprovider = new ethers.providers.JsonRpcProvider(
+      "https://polygon-mumbai.g.alchemy.com/v2/N_-JU1B2XbGAPiCpCE0CSv7Y9P5CFP-D"
+    );
+
+    if (Rpcprovider) {
+      const PocketContract = new ethers.Contract(
+        PocketContractAddress,
+        abi2,
+        Rpcprovider
+      );
+
+      let title = await PocketContract.title();
+      let description = await PocketContract.description();
+      let targetAmount = await PocketContract.targetAmount();
+
+      const value = {
+        title: title,
+        description: description,
+        targetAmount: targetAmount,
+      };
+      return value;
+    } else {
+      console.log("Provider NOt Defined");
+    }
+  }
+
   const codeOfSafe = () => {
     // const safeAuthInitOptions = {
     //   showWidgetButton: true, // Set to true to show the SafeAuth widget button
@@ -272,22 +324,23 @@ export default function Home() {
 
   const howItWorks = [
     {
-      title: "Decentralized Ledger at Work",
-      description: "Explore the Inner Workings of our Blockchain DApp",
+      title: "Create & Personalize: Set Up Your Pool",
+      description:
+        "Launch your pool with a unique, customizable link for any group goal",
       image:
         "https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png",
     },
     {
-      title: "From Transactions to Transparency",
+      title: "Invite & Contribute: Bring Everyone Onboard",
       description:
-        "Unraveling the Mechanics of Seamless Financial Collaboration",
+        "Gather your crew easily via Google accounts for hassle-free contributions    ",
       image:
         "https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png",
     },
     {
-      title: "Empowering Users, Ensuring Security",
+      title: "Spend & Monitor: Enjoy & Oversee",
       description:
-        "A Glimpse into the Functionality and Safety Measures of our Platform",
+        "Use pooled funds flexibly with crypto or fiat, while tracking every transaction effortlessly",
       image:
         "https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png",
     },
@@ -389,50 +442,71 @@ export default function Home() {
       { url: "https://www.yourwebsite.com/privacy", text: "Privacy Policy" },
     ],
   ];
-  useEffect(() => {
-    const lenis = new Lenis();
 
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
+  const threeItemStat = [
+    {
+      title: "Google Easy Contributions: Tap, Chip, and Go!",
+      des: "Seamlessly chip in for any group expense with just your Google account. Easy, fast, and hassle-free.",
+    },
+    {
+      title: "Limitless Pools, Limitless Possibilities: Dive into Freedom!",
+      des: "Start as many money pools as you like, free of charge, and manage group expenses without limits.",
+    },
+    {
+      title: "Your Pool, Your Personality: Customize Creatively!",
+      des: "Personalize your Pool Link to reflect your group's unique identity and financial goals.",
+    },
+  ];
+  const threeItemStat2 = [
+    {
+      title: "Spend Globally, Pay Locally: The Crypto-Fiat Flexibility! ",
+      des: "Seamlessly chip in for any group expense with just your Google account. Easy, fast, and hassle-free.",
+    },
+    {
+      title: "Transaction Transparency: Watch Your Money Move!",
+      des: "Stay updated with real-time notifications and detailed monthly statements to track every contribution and spend.",
+    },
+    {
+      title: "Pool Power, Shared or Solo: You’re in Command!",
+      des: "Run your pool your way – solo or as a team. Invite collaborators, set permissions, manage spending limits, and more for complete control.",
+    },
+  ];
+  // useEffect(() => {
+  //   const lenis = new Lenis();
 
-    requestAnimationFrame(raf);
-  }, []);
+  //   function raf(time) {
+  //     lenis.raf(time);
+  //     requestAnimationFrame(raf);
+  //   }
 
-  // Accessing an example link and text
-  console.log(footerLinks[0][0].url); // Output: https://github.com/yourusername
-  console.log(footerLinks[0][0].text); // Output: GitHub
-
-  // Accessing elements in the array
-  console.log(myArrayWithIcons[0].item); // Outputs: Rent
-  console.log(myArrayWithIcons[0].icon); // Outputs: 🏠
+  //   requestAnimationFrame(raf);
+  // }, []);
 
   return (
     <>
       <main className="min-h-screen flex flex-col justify-center items-center min-w-screen">
-        {/* <div>
-        <Card>
-          <h1>magic -alchemy</h1>
-          <button onClick={handleConnect}>Connect</button>
+        <div>
+          <Card>
+            <h1>magic -alchemy</h1>
+            <button onClick={handleConnect}>Connect</button>
 
-          {isConnected ? (
-            <p>smart account address is {address} </p>
-          ) : (
-            <p>..loading</p>
-          )}
-          {isConnected && (
-            <button onClick={handleDisconnect}>Disconnect</button>
-          )}
+            {isConnected ? (
+              <p>smart account address is {address} </p>
+            ) : (
+              <p>..loading</p>
+            )}
+            {isConnected && (
+              <button onClick={handleDisconnect}>Disconnect</button>
+            )}
 
-          <Button variant="contained" onClick={sendTx}>
-            Make a Tx
-          </Button>
-          <div>
-            <p>data is {data} </p>
-          </div>
-        </Card>
-      </div> */}
+            <Button variant="contained" onClick={sendTx}>
+              Make a Tx
+            </Button>
+            <div>
+              <p>data is {data} </p>
+            </div>
+          </Card>
+        </div>
         <div className="flex flex-col gap-4">
           {/* <Button onClick={login}>Login</Button>
         <Button onClick={getUserInfo}>Get User Info</Button> */}
@@ -478,21 +552,19 @@ export default function Home() {
 
           <div className="w-full gap-12 grid grid-cols-1 p-4 lg:p-0 lg:grid-cols-3">
             {howItWorks.map((_, i) => (
-              <>
-                <Card
-                  className="w-full  backdrop-blur-sm bg-white/20 border-black flex flex-col gap-4 p-4 pl-8 pr-8 min-h-[200px] hover:bg-slate-600 transition-all ease-in-out duration-300"
-                  key={i}
-                >
-                  <Avatar className="h-[4rem] w-[4rem]">
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                  <span className="text-[1.5rem] font-bold monster">
-                    {_.title}
-                  </span>
-                  <span className="font-light">{_.description}</span>
-                </Card>
-              </>
+              <Card
+                className="w-full  backdrop-blur-sm bg-white/20 border-black flex flex-col gap-4 p-4 pl-8 pr-8 min-h-[200px] hover:bg-slate-600 transition-all ease-in-out duration-300"
+                key={i}
+              >
+                <Avatar className="h-[5rem] w-[5rem]">
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <span className="text-[1.5rem] font-bold monster">
+                  {_.title}
+                </span>
+                <span className="font-light">{_.description}</span>
+              </Card>
             ))}
           </div>
 
@@ -500,16 +572,14 @@ export default function Home() {
             <div className="flex lg:flex-row flex-col items-center justify-center lg:gap-4">
               <div className="flex w-full flex-col gap-8">
                 {Array.from({ length: 3 }).map((_, i) => (
-                  <>
-                    <div className="flex flex-col gap-2">
-                      <span className="text-[1.5rem] font-bold monster">
-                        Stats Title
-                      </span>
-                      <span className="text-[1.25rem]">
-                        Stats description will go here with color
-                      </span>
-                    </div>
-                  </>
+                  <div key={i} className="flex flex-col gap-2">
+                    <span className="text-[1.5rem] font-bold monster">
+                      Stats Title
+                    </span>
+                    <span className="text-[1.25rem]">
+                      Stats description will go here with color
+                    </span>
+                  </div>
                 ))}
               </div>
               <img className="lg:w-[48%]" src={"m1.png"} />
@@ -517,16 +587,14 @@ export default function Home() {
             <div className="flex   flex-col items-center lg:text-right lg:flex-row-reverse justify-center gap-4">
               <div className="flex w-full  flex-col gap-8">
                 {Array.from({ length: 3 }).map((_, i) => (
-                  <>
-                    <div className="flex flex-col gap-2">
-                      <span className="text-[1.5rem] font-bold monster">
-                        Stats Title
-                      </span>
-                      <span className="text-[1.25rem]">
-                        Stats description will go here with color
-                      </span>
-                    </div>
-                  </>
+                  <div key={i} className="flex flex-col gap-2">
+                    <span className="text-[1.5rem] font-bold monster">
+                      Stats Title
+                    </span>
+                    <span className="text-[1.25rem]">
+                      Stats description will go here with color
+                    </span>
+                  </div>
                 ))}
               </div>
               <img className="lg:w-[48%]" src={"m1.png"} />
@@ -542,11 +610,12 @@ export default function Home() {
 
           <div className="w-[70%] flex items-center justify-center flex-wrap mt-[2rem] lg:mt-0 gap-2 lg:gap-6">
             {myArrayWithIcons.map((_, i) => (
-              <>
-                <Card className="lg:p-4 p-2 hover:bg-secondary monstser transition-all duration-200 ease-in-out cursor-pointer items-center justify-center lg:pl-6 lg:pr-6 lg:text-[1.35rem] lg:font-bold tracking-wider">
-                  {_.icon} {_.item}
-                </Card>
-              </>
+              <Card
+                key={i}
+                className="lg:p-4 p-2 hover:bg-secondary monstser transition-all duration-200 ease-in-out cursor-pointer items-center justify-center lg:pl-6 lg:pr-6 lg:text-[1.35rem] lg:font-bold tracking-wider"
+              >
+                {_.icon} {_.item}
+              </Card>
             ))}
           </div>
         </div>
@@ -558,21 +627,19 @@ export default function Home() {
 
           <div className="w-full gap-12 grid lg:grid-cols-3">
             {expensePooling.map((_, i) => (
-              <>
-                <Card
-                  className="w-full  backdrop-blur-sm bg-white dark:text-black dark:hover:text-white  border-black flex flex-col gap-4 p-4 pl-8 pr-8 min-h-[200px] hover:bg-slate-600 transition-all ease-in-out duration-300"
-                  key={i}
-                >
-                  <Avatar className="h-[4rem] w-[4rem]">
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                  <span className="text-[1.5rem] font-bold monster">
-                    {_.title}
-                  </span>
-                  <span className="font-light">{_.description}</span>
-                </Card>
-              </>
+              <Card
+                className="w-full  backdrop-blur-sm bg-white dark:text-black dark:hover:text-white  border-black flex flex-col gap-4 p-4 pl-8 pr-8 min-h-[200px] hover:bg-slate-600 transition-all ease-in-out duration-300"
+                key={i}
+              >
+                <Avatar className="h-[4rem] w-[4rem]">
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <span className="text-[1.5rem] font-bold monster">
+                  {_.title}
+                </span>
+                <span className="font-light">{_.description}</span>
+              </Card>
             ))}
           </div>
         </div>
@@ -583,9 +650,7 @@ export default function Home() {
 
           <div className="w-full lg:gap-12 p-4 lg:p-0 flex flex-col">
             {faqList.map((_, i) => (
-              <>
-                <FaqList title={_.question} content={_.answer} />
-              </>
+              <FaqList key={i} title={_.question} content={_.answer} />
             ))}
           </div>
         </div>
@@ -599,15 +664,14 @@ export default function Home() {
               return (
                 <div className="flex flex-col gap-4">
                   {list.map((_, i) => (
-                    <>
-                      <Link
-                        href={_.url}
-                        className="text-[14px] lg:text-[18px] flex gap-2 items-center text-white"
-                      >
-                        {_.text}{" "}
-                        <ExternalLink className="h-4 hidden lg:block w-4" />
-                      </Link>
-                    </>
+                    <Link
+                      key={i}
+                      href={_.url}
+                      className="text-[14px] lg:text-[18px] flex gap-2 items-center text-white"
+                    >
+                      {_.text}{" "}
+                      <ExternalLink className="h-4 hidden lg:block w-4" />
+                    </Link>
                   ))}
                 </div>
               );
