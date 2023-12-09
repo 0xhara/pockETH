@@ -10,7 +10,7 @@ function Logo({ className }) {
           className
         )}
       >
-        pock<span className="text-accent font-bold">ETH</span>
+        PockETH 2gETHER
       </span>
     </Link>
   );

@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="dark">
       <body className={inter.className}>
-        <div className="fixed blur-[300px] z-[-1] top-0 left-0 right-0 bottom-0">
+        <div className="fixed blur-[300px] bg-black bg-opacity-80  z-[-1] top-0 left-0 right-0 bottom-0">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-full w-full">
             <defs>
               <linearGradient
@@ -24,25 +24,25 @@ export default function RootLayout({ children }) {
                 x2="1"
                 y2="1"
               >
-                <stop offset="0" stop-color="red">
+                <stop offset="0" stopColor="red">
                   <animate
-                    attributeName="stop-color"
+                    attributeName="stopColor"
                     values="red;purple;blue;green;yellow;orange;red;"
                     dur="20s"
                     repeatCount="indefinite"
                   ></animate>
                 </stop>
-                <stop offset=".5" stop-color="purple">
+                <stop offset=".5" stopColor="purple">
                   <animate
-                    attributeName="stop-color"
+                    attributeName="stopColor"
                     values="purple;blue;green;yellow;orange;red;purple;"
                     dur="20s"
                     repeatCount="indefinite"
                   ></animate>
                 </stop>
-                <stop offset="1" stop-color="blue">
+                <stop offset="1" stopColor="blue">
                   <animate
-                    attributeName="stop-color"
+                    attributeName="stopColor"
                     values="blue;green;yellow;orange;red;purple;blue;"
                     dur="20s"
                     repeatCount="indefinite"
@@ -65,17 +65,17 @@ export default function RootLayout({ children }) {
                 x2="1"
                 y2="1"
               >
-                <stop offset="0" stop-color="red">
+                <stop offset="0" stopColor="red">
                   <animate
-                    attributeName="stop-color"
+                    attributeName="stopColor"
                     values="red;purple;blue;green;yellow;orange;red;"
                     dur="20s"
                     repeatCount="indefinite"
                   ></animate>
                 </stop>
-                <stop offset="1" stop-color="purple" stop-opacity="0">
+                <stop offset="1" stopColor="purple" stopOpacity="0">
                   <animate
-                    attributeName="stop-color"
+                    attributeName="stopColor"
                     values="purple;blue;green;yellow;orange;red;purple;"
                     dur="20s"
                     repeatCount="indefinite"
@@ -85,7 +85,7 @@ export default function RootLayout({ children }) {
                   attributeName="gradientTransform"
                   type="rotate"
                   values="360 .5 .5;0 .5 .5"
-                  class="ignore"
+                  className="ignore"
                   dur="10s"
                   repeatCount="indefinite"
                 />
