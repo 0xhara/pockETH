@@ -33,7 +33,7 @@ import { abi } from "../lib/abi.json";
 const chain = polygonMumbai;
 
 import { Web3Auth } from "@web3auth/modal";
-import { ExternalLink, Github, Leaf } from "lucide-react";
+import { Copyright, ExternalLink, Github, Leaf } from "lucide-react";
 import Link from "next/link";
 import Logo from "@/components/logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -596,6 +596,13 @@ export default function Home() {
                 </div>
               );
             })}
+          </div>
+          <div>
+            <div className="flex items-center gap-2 justify-center border-t-[1px] pt-4">
+              {/* <Icon className="h-4 w-4" src="copyright-icon.png" /> */}
+              <Copyright />
+              Made with ❤️ in ETHIndia 2023
+            </div>
           </div>
         </div>
       </footer>
