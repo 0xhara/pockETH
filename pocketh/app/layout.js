@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="dark">
       <body className={inter.className}>
-        <div className="absolute blur-[300px] z-[-1] top-0 left-0 right-0 bottom-0">
+        <div className="fixed blur-[300px] z-[-1] top-0 left-0 right-0 bottom-0">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-full w-full"

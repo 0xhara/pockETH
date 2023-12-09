@@ -4,7 +4,7 @@ import Logo from "./logo";
 
 function Header() {
   return (
-    <header className="w-full z-[999] justify-between flex items-center top-0 left-0 right-0 sticky p-4 pl-[4rem] pr-[4rem]">
+    <header className="w-full z-[999] justify-between backdrop-blur-xl flex items-center top-0 left-0 right-0 sticky p-4 pl-[4rem] pr-[4rem]">
       <Logo />
 
       <div className="flex gap-4">
