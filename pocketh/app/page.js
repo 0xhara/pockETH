@@ -370,24 +370,25 @@ export default function Home() {
   ];
 
   const myArrayWithIcons = [
-    { item: "Rent", icon: "🏠" },
-    { item: "Vacation Funds", icon: "🏖" },
-    { item: "Sports Leagues", icon: "🏀" },
-    { item: "Gifts", icon: "🎁" },
-    { item: "Baby Showers", icon: "🍼" },
-    { item: "Teacher Appreciation", icon: "🧑‍🏫" },
-    { item: "Graduation Gifts", icon: "🎁" },
-    { item: "Class Reunions", icon: "🎓" },
-    { item: "Cash Registry", icon: "💸" },
-    { item: "Weddings", icon: "💍" },
-    { item: "Community Projects", icon: "🌻" },
-    { item: "Club Dues", icon: "👥" },
-    { item: "Emergency Funds", icon: "🚨" },
-    { item: "Memorials", icon: "💛" },
-    { item: "Bands", icon: "🎸" },
-    { item: "Netflix", icon: "🍿" },
-    { item: "Home Improvement Projects", icon: "🛠" },
+    { name: "Dinner dates", emoji: "🍽️" },
+    { name: "Shared rent", emoji: "🏠" },
+    { name: "Office parties", emoji: "🎉" },
+    { name: "Sports team expenses", emoji: "⚽" },
+    { name: "Wedding gifts", emoji: "💍" },
+    { name: "Joint vacation trips", emoji: "✈️" },
+    { name: "Club bookings", emoji: "🕺" },
+    { name: "Group subscriptions", emoji: "👥" },
+    { name: "Event tickets", emoji: "🎟️" },
+    { name: "Car pooling costs", emoji: "🚗" },
+    { name: "Emergency funds", emoji: "🚨" },
+    { name: "School reunions", emoji: "🏫" },
+    { name: "Family get-togethers", emoji: "👨‍👩‍👧" },
+    { name: "Study group fund", emoji: "📚" },
+    { name: "Joint freelancer charges", emoji: "💼" },
+    { name: "Gaming guild purchases", emoji: "🎮" },
   ];
+
+  // console.log(items);
 
   const faqList = [
     {
@@ -614,7 +615,7 @@ export default function Home() {
                 key={i}
                 className="lg:p-4 p-2 hover:bg-secondary monstser transition-all duration-200 ease-in-out cursor-pointer items-center justify-center lg:pl-6 lg:pr-6 lg:text-[1.35rem] lg:font-bold tracking-wider"
               >
-                {_.icon} {_.item}
+                {_.name} {_.emoji}
               </Card>
             ))}
           </div>
