@@ -14,11 +14,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className="dark">
       <body className={inter.className}>
         <div className="fixed blur-[300px] z-[-1] top-0 left-0 right-0 bottom-0">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-full w-full"
-            viewBox="0 0 1920 1080"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-full w-full">
             <defs>
               <linearGradient
                 id="a"

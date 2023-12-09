@@ -6,7 +6,7 @@ function Logo({ className }) {
     <Link href={"/"}>
       <span
         className={cn(
-          "monster text-[2rem] font-bold tracking-wider",
+          "monster  lg:text-[2rem] font-bold tracking-wider",
           className
         )}
       >
