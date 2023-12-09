@@ -1,113 +1,318 @@
-import Image from 'next/image'
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+
+import { Badge } from "@/components/ui/badge";
+
+//from here
+// import { AlchemyProvider, ethers } from "ethers";
+
+import { AlchemyProvider } from "@alchemy/aa-alchemy";
+import { EthersAdapter, SafeFactory } from "@safe-global/protocol-kit";
+import {
+  LightSmartContractAccount,
+  getDefaultLightAccountFactoryAddress,
+} from "@alchemy/aa-accounts";
+import { polygonMumbai } from "viem/chains";
+// import { createMagicSigner } from "./magic";
+import { WalletClientSigner } from "@alchemy/aa-core";
+// import { web3authSigner } from "./web3Auth";
+// import { web3auth } from "../lib/action/main";
+import {
+  createWalletClient,
+  custom,
+  createPublicClient,
+  http,
+  PublicClient,
+} from "viem";
+import { encodeFunctionData } from "viem";
+import { Card } from "@/components/ui/card";
+
+import { abi } from "../lib/abi.json";
+const chain = polygonMumbai;
+
+import { Web3Auth } from "@web3auth/modal";
+
+// see https://web3auth.io/docs/quick-start for more info
+const web3auth = new Web3Auth({
+  clientId:
+    "BAS_gcrlMi6qZszD3l6ftWG22VAQCx5p7dEyKyZx0FnSWBYgxKOJ2y0SzRz7dZNUr7VX6Ow-ARcw_z3upiTQaUU", // Get your Client ID from the Web3Auth Dashboard
+  web3AuthNetwork: "sapphire_devnet", // Web3Auth Network
+  chainConfig: {
+    chainNamespace: "eip155",
+    chainId: "0x13881",
+    rpcTarget: "https://rpc-mumbai.maticvigil.com/",
+    //"https://rpc.ankr.com/eth"
+    displayName: "Polygon Mumbai",
+    ticker: "MATIC",
+  },
+});
 
 export default function Home() {
+  const [provider, setProvider] = useState(null);
+  const [owner, setOwner] = useState(null);
+  const [address, setAddress] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [data, setData] = useState(null);
+  const [client, setClient] = useState(null);
+
+  //   const [web3AuthSigner,setWeb3AuthSigner]=useState(null);
+
+  console.log("client side abi ", chain);
+
+  useEffect(() => {
+    const init = async () => {
+      await web3auth.initModal();
+      const temp_client = createPublicClient({
+        chain: chain,
+        transport: http(),
+      });
+      setClient(temp_client);
+    };
+    init();
+  }, []);
+
+  useEffect(() => {
+    if (owner) {
+      //get Alchemy provider from web3Auth signer
+      console.log("inside");
+      const getProvider = async () => {
+        console.log("inside get provider", chain);
+        const fetch_prov = new AlchemyProvider({
+          chain,
+          apiKey: "N_-JU1B2XbGAPiCpCE0CSv7Y9P5CFP-D",
+        }).connect(
+          (rpcClient) =>
+            new LightSmartContractAccount({
+              chain: rpcClient.chain,
+              owner: owner, // this is link to web3
+              factoryAddress: getDefaultLightAccountFactoryAddress(chain),
+              rpcClient,
+            })
+        );
+        setProvider(fetch_prov);
+      };
+      getProvider();
+    } else {
+      console.log("no owner");
+    }
+  }, [owner]);
+
+  useEffect(() => {
+    if (provider) {
+      const getAddress = async () => {
+        const add = await provider?.getAddress();
+        setAddress(add);
+        setIsConnected(true);
+        console.log(address);
+      };
+      getAddress();
+    }
+  }, [provider]);
+
+  const handleConnect = async () => {
+    try {
+      await web3auth.connect();
+      const web3authClient = createWalletClient({
+        transport: custom(web3auth.provider),
+      });
+
+      // a smart account signer you can use as an owner on ISmartContractAccount
+      const web3authSigner = new WalletClientSigner(
+        web3authClient,
+        "web3auth" // signerType
+      );
+      setOwner(web3authSigner);
+    } catch (error) {
+      console.log("Error creating signer:", error);
+    }
+  };
+
+  const handleDisconnect = async () => {
+    await web3auth.logout();
+    setProvider(null);
+    setOwner(null);
+    setIsConnected(false);
+  };
+
+  const sendTx = async () => {
+    //use this block for sending write requests
+    const uoCallData = encodeFunctionData({
+      abi: abi,
+      functionName: "incrementCount",
+    });
+
+    provider?.withAlchemyGasManager({
+      policyId: "c1e552f7-5557-42aa-8a24-0c55895f35db", // replace with your policy id, get yours at https://dashboard.alchemy.com/
+    });
+    const uo = await provider?.sendUserOperation({
+      target: "0x464251C90969F21c82C57Da3001eEd7019AEF646",
+      data: uoCallData,
+    });
+
+    const txHash = await provider?.waitForUserOperationTransaction(uo.hash);
+
+    console.log(txHash, uo);
+    readRequest();
+  };
+  const readRequest = async () => {
+    //use this block for sending read requests.it uses publicClient.
+
+    // console.log("client is ",client)
+    const d = Number(
+      await client.readContract({
+        address: "0x464251C90969F21c82C57Da3001eEd7019AEF646",
+        abi: abi,
+        functionName: "count",
+      })
+    );
+    setData(d);
+  };
+  const codeOfSafe = () => {
+    // const safeAuthInitOptions = {
+    //   showWidgetButton: true, // Set to true to show the SafeAuth widget button
+    //   chainConfig: {
+    //     blockExplorerUrl: "https://etherscan.io", // The block explorer URL
+    //     chainId: "0x13881", // The chain ID
+    //     displayName: "Mumbai", // The chain name
+    //     rpcTarget: "https://endpoints.omniatech.io/v1/matic/mumbai/public", // The RPC target
+    //     ticker: "ETH", // The chain ticker
+    //     tickerName: "Ethereum", // The chain ticker name
+    //   },
+    // };
+    // const safeAuthPack = new SafeAuthPack({
+    //   // txServiceUrl: "https://safe-transaction-mainnet.safe.global",
+    // });
+    // const [isAuthenticated, setIsAuthenticated] = useState(false);
+    // const [eoa, setEoa] = useState(null);
+    // const [safeAd, setSafeAd] = useState("");
+    // async function init() {
+    //   try {
+    //     await safeAuthPack.init(safeAuthInitOptions);
+    //     // const { eoa, safes } = await safeAuthPack.signIn();
+    //   } catch (error) {
+    //     console.error("Error initializing SafeAuthPack:", error);
+    //   }
+    // }
+    // useEffect(() => {
+    //   init().then(() => {
+    //     console.log("SafeAuthPack initialized", safeAuthPack);
+    //     // setIsAuthenticated(safeAuthPack?.isAuthenticated);
+    //     // console.log(safeAuthPack?.isAuthenticated, "safeAuthPack Authenticated");
+    //   });
+    // }, []);
+    // // useEffect(() => {
+    // //   getUserInfo();
+    // // }, []);
+    // const login = async () => {
+    //   const loginValue = await safeAuthPack.signIn();
+    //   setEoa(loginValue.eoa);
+    //   console.log(loginValue, "loginValue");
+    //   // console.log(eoa, "this is eoa");
+    //   // console.log(safeAuthSignInResponse, "safeAuthSignInResponse");
+    // };
+    // const getUserInfo = async () => {
+    //   const safeAuthUserInfoResponse = await safeAuthPack?.getUserInfo();
+    //   console.log(safeAuthUserInfoResponse, "safeAuthUserInfoResponse User Info");
+    // };
+    // const logout = async () => {
+    //   const safeAuthSignOutResponse = await safeAuthPack?.signOut();
+    //   console.log(safeAuthSignOutResponse, "safeAuthSignOutResponse");
+    // };
+    // const providerDetails = async () => {
+    //   // Wrap EIP-1193 provider with ethers
+    //   const provider = new ethers.BrowserProvider(safeAuthPack.getProvider());
+    //   const signer = provider.getSigner();
+    //   // Create the Safe EthersAdapter
+    //   const ethAdapter = new EthersAdapter({
+    //     ethers,
+    //     signerOrProvider: signer || provider,
+    //   });
+    //   const safeFactory = await SafeFactory.create({
+    //     ethAdapter,
+    //   });
+    //   const owners = [eoa];
+    //   const safeAccountConfig = {
+    //     owners,
+    //     threshold: 1,
+    //   };
+    //   const safeSdk = await safeFactory.deploySafe({ safeAccountConfig });
+    //   const safeAddress = safeFactory.getAddress();
+    //   console.log(safeAddress, "this is safeAddress");
+    // };
+    // Instantiate the protocolKit
+    // const protocolKit = await Safe.create({
+    //   ethAdapter,
+    //   safeAddress,
+    // })
+    // Create a Safe transaction with the provided parameters
+    // const safeTransactionData = {
+    //   to: `${ethAddress}`,
+    //   data: "0x",
+    //   value: ethers.parseUnits("0.0001", "ether").toString(),
+    // };
+    // const safeTransaction = await protocolKit.createTransaction({
+    //   transactions: [safeTransactionData],
+    // })
+    // Sign the transaction if the Safe have several owners
+    // safeTransaction = await protocolKit1.signTransaction(safeTransaction)
+    // safeTransaction = await protocolKit2.signTransaction(safeTransaction)
+    // Execute the transaction
+    // await protocolKit.executeTransaction(safeTransaction)
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <main className="min-h-screen flex justify-center items-center min-w-screen">
+      <div>
+        <Card>
+          <h1>magic -alchemy</h1>
+          <button onClick={handleConnect}>Connect</button>
+
+          {isConnected ? (
+            <p>smart account address is {address} </p>
+          ) : (
+            <p>..loading</p>
+          )}
+          {isConnected && (
+            <button onClick={handleDisconnect}>Disconnect</button>
+          )}
+
+          <Button variant="contained" onClick={sendTx}>
+            Make a Tx
+          </Button>
+          <div>
+            <p>data is {data} </p>
+          </div>
+        </Card>
+      </div>
+      <div className="flex flex-col gap-4">
+        {/* <Button onClick={login}>Login</Button>
+        <Button onClick={getUserInfo}>Get User Info</Button> */}
+        {/* <Button onClick={providerDetails}>Provider</Button> */}
+
+        {/* <span>safeAd</span> */}
+      </div>
+      <div className="flex gap-4 max-w-[1440px] w-full">
+        <div className="flex flex-col gap-4 items-start ">
+          <Badge>Team Name</Badge>
+          <span className="text-[4rem] font-bold monster">
+            Decentralized Expense Harmony
+          </span>
+          <span className="font-light">
+            Empower Your Group Finances with Blockchain for Seamless Event
+            Spending
+          </span>
+
+          <div className="flex mt-[2rem] gap-4">
+            <Button>Get Started</Button>
+            <Button variant="outlined">View Github</Button>
+          </div>
+        </div>
+        <div>
+          <img src="https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png" />
         </div>
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
     </main>
-  )
+  );
 }
