@@ -9,16 +9,12 @@ import { Badge } from "@/components/ui/badge";
 // import { AlchemyProvider, ethers } from "ethers";
 
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
-import { EthersAdapter, SafeFactory } from "@safe-global/protocol-kit";
 import {
   LightSmartContractAccount,
   getDefaultLightAccountFactoryAddress,
 } from "@alchemy/aa-accounts";
 import { polygonMumbai } from "viem/chains";
-// import { createMagicSigner } from "./magic";
 import { WalletClientSigner } from "@alchemy/aa-core";
-// import { web3authSigner } from "./web3Auth";
-// import { web3auth } from "../lib/action/main";
 import { ethers } from "ethers";
 
 import {
@@ -30,10 +26,12 @@ import {
 } from "viem";
 import { encodeFunctionData } from "viem";
 import { Card } from "@/components/ui/card";
+import {abi as abiFactory} from "../lib/factoryAbi.json";
+import {abi as abiPocket} from "../lib/pocketAbi.json";
 
-import { abi2 } from "../lib/pocketAbi.json";
-import { abi } from "../lib/factoryAbi.json";
 const chain = polygonMumbai;
+const factoryAddress="0xE84C255e649441b59d94f8488F54ba807FC27Df9"
+
 
 import { Web3Auth } from "@web3auth/modal";
 import { Copyright, ExternalLink, Github, Leaf } from "lucide-react";
@@ -49,9 +47,7 @@ const web3auth = new Web3Auth({
   chainConfig: {
     chainNamespace: "eip155",
     chainId: "0x13881",
-    rpcTarget:
-      "https://polygon-mumbai.g.alchemy.com/v2/N_-JU1B2XbGAPiCpCE0CSv7Y9P5CFP-D",
-    //"https://rpc.ankr.com/eth"
+    rpcTarget:"https://polygon-mumbai.g.alchemy.com/v2/rSk6bxEUS95Gwf_NsxAcM7_AWfU58hXK",
     displayName: "Polygon Mumbai",
     ticker: "MATIC",
   },
@@ -66,168 +62,222 @@ export default function Home() {
   const [owner, setOwner] = useState(null);
   const [address, setAddress] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [data, setData] = useState(null); //addresses of pockets
-  const [pocketsData, setPocketsData] = useState([]);
-  const [client, setClient] = useState(null);
+  const [data,setData]=useState(null); //addresses of pockets
+  const [pocketsData,setPocketsData]=useState([]);
+  const [client,setClient]=useState(null);
 
-  //   const [web3AuthSigner,setWeb3AuthSigner]=useState(null);
+//   const [web3AuthSigner,setWeb3AuthSigner]=useState(null);
 
-  useEffect(() => {
-    // console.log("abi is ", abi);
-    const init = async () => {
-      await web3auth.initModal();
-      const temp_client = createPublicClient({
-        chain: chain,
-        transport: http(),
-      });
-      setClient(temp_client);
-    };
-    init();
-  }, []);
-
-  // useEffect(() => {
-  //   if (owner) {
-  //     //get Alchemy provider from web3Auth signer
-  //     console.log("inside");
-  //     const getProvider = async () => {
-  //       const fetch_prov = new AlchemyProvider({
-  //         apiKey: "N_-JU1B2XbGAPiCpCE0CSv7Y9P5CFP-D",
-  //         chain,
-  //       }).connect(
-  //         (rpcClient) =>
-  //           new LightSmartContractAccount({
-  //             chain: rpcClient.chain,
-  //             owner: owner, // this is link to web3
-  //             factoryAddress: getDefaultLightAccountFactoryAddress(chain),
-  //             rpcClient,
-  //           })
-  //       );
-  //       setProvider(fetch_prov);
-  //     };
-  //     getProvider();
-  //   } else {
-  //     console.log("no owner");
-  //   }
-  // }, [owner]);
-
-  useEffect(() => {
-    if (provider) {
-      const getAddress = async () => {
-        const add = await provider?.getAddress();
-        setAddress(add);
-        setIsConnected(true);
-        console.log(address);
+useEffect(()=>{
+  // console.log("abi is ",abi);
+  const init=async()=>{
+    await web3auth.initModal();
+     const temp_client = createPublicClient({ 
+      chain: chain,
+      transport: http()
+    })
+    setClient(temp_client);
       };
-      getAddress();
-    }
-  }, [provider]);
+  init();
+},[])
 
+useEffect(() => {
+  if (owner) {
+    
+    //get Alchemy provider from web3Auth signer
+    console.log("inside")
+    const getProvider = async () => {
+      const fetch_prov = new AlchemyProvider({
+        apiKey: "rSk6bxEUS95Gwf_NsxAcM7_AWfU58hXK",
+        chain,
+      }).connect(
+        (rpcClient) =>
+          new LightSmartContractAccount({
+            chain: rpcClient.chain,
+            owner: owner, // this is link to web3
+            factoryAddress: getDefaultLightAccountFactoryAddress(chain),
+            rpcClient,
+          })
+      );
+      setProvider(fetch_prov);
+            
+    };
+    getProvider();
+  }
+  else{
+    console.log("no owner")
+  }
+}, [owner]);
+
+useEffect(()=>{
+  
+  if(provider){
+    const getAddress=async()=>{
+    const add = await provider?.getAddress();
+      setAddress(add);
+      setIsConnected(true);
+      console.log("address is ",address);
+
+  };
+  getAddress();
+}
+},[provider]);
+
+  
   const handleConnect = async () => {
     try {
-      await web3auth.connect();
-      const web3authClient = createWalletClient({
-        transport: custom(web3auth.provider),
-      });
-
-      // a smart account signer you can use as an owner on ISmartContractAccount
-      const web3authSigner = new WalletClientSigner(
-        web3authClient,
-        "web3auth" // signerType
-      );
-      setOwner(web3authSigner);
+        await web3auth.connect();
+         const web3authClient =createWalletClient({
+            transport: custom(web3auth.provider),
+          });
+          
+          // a smart account signer you can use as an owner on ISmartContractAccount
+        const web3authSigner= new WalletClientSigner(
+            web3authClient,
+            "web3auth" // signerType
+          );
+          setOwner(web3authSigner);
     } catch (error) {
       console.log("Error creating signer:", error);
     }
   };
 
+
   const handleDisconnect = async () => {
     await web3auth.logout();
-    // setProvider(null);
+    setProvider(null);
     setOwner(null);
     setIsConnected(false);
   };
 
-  const sendTx = async () => {
-    //use this block for sending write requests
+  const sendTx=async()=>{
+      //use this block for sending write requests
     const uoCallData = encodeFunctionData({
-      abi: abi,
+      abi: abiFactory,
       functionName: "createPocket",
-      args: ["abcdef12", "zk", 10],
+      args:["blu","zk",10,address]
     });
-
+    
     provider.withAlchemyGasManager({
-      policyId: "c1e552f7-5557-42aa-8a24-0c55895f35db", // replace with your policy id, get yours at https://dashboard.alchemy.com/
+      policyId: "5ae95b73-c385-4461-be66-1edfd394961c", // replace with your policy id, get yours at https://dashboard.alchemy.com/
     });
     const uo = await provider.sendUserOperation({
-      target: "0x2BeC4b3df9362A60a73A36f1D04208aBe542a3a7", //factory contract
+      target: factoryAddress, //factory contract
       data: uoCallData,
     });
-
+    
     const txHash = await provider.waitForUserOperationTransaction(uo.hash);
-
-    console.log(txHash, uo);
+    
+    console.log(txHash,uo);
     readRequest();
-  };
-  const readRequest = async () => {
+    
+
+  }
+  const readRequest=async()=>{
     //use this block for sending read requests.it uses publicClient.
 
     // console.log("client is ",client)
-    const pockets = await client.readContract({
-      address: "0x2BeC4b3df9362A60a73A36f1D04208aBe542a3a7",
-      abi: abi,
-      functionName: "getPocketsByOwner",
-      args: [address],
-    });
+    const pockets = (await client.readContract({
+      address: factoryAddress,
+      abi: abiFactory,
+      functionName: 'getPocketsByOwner',
+      args:[address]
+    }))
     setData(pockets);
-  };
+
+  }
+
 
   useEffect(() => {
-    if (data) {
-      console.log("data is ", data);
+    if(data){
+      console.log("data is ",data)
       const fetchData = async () => {
         let pocketDataArray = [];
-        for (let i = 0; i < data.length; i++) {
+        for(let i = 0; i < data.length; i++){
           const pocketData = await fetchVariables(data[i].toString());
-          console.log(
-            data[i].toString(),
-            "this is where we are getting single item"
-          );
           pocketDataArray.push(pocketData);
         }
         setPocketsData(pocketDataArray);
         console.log("fetching pockets data");
-      };
+      }
       fetchData();
     }
-  }, [data]);
+  }, [data])
 
-  async function fetchVariables(PocketContractAddress) {
-    // Initialize the ethers.js contract object
-    const Rpcprovider = new ethers.providers.JsonRpcProvider(
-      "https://polygon-mumbai.g.alchemy.com/v2/N_-JU1B2XbGAPiCpCE0CSv7Y9P5CFP-D"
-    );
 
-    if (Rpcprovider) {
-      const PocketContract = new ethers.Contract(
-        PocketContractAddress,
-        abi2,
-        Rpcprovider
-      );
 
-      let title = await PocketContract.title();
-      let description = await PocketContract.description();
-      let targetAmount = await PocketContract.targetAmount();
+    
+async function fetchVariables(PocketContractAddress) {
 
-      const value = {
-        title: title,
-        description: description,
-        targetAmount: targetAmount,
-      };
-      return value;
-    } else {
-      console.log("Provider NOt Defined");
-    }
-  }
+  const Rpcprovider = new ethers.providers.JsonRpcProvider('https://polygon-mumbai.g.alchemy.com/v2/rSk6bxEUS95Gwf_NsxAcM7_AWfU58hXK');
+
+// Initialize the ethers.js contract object
+const PocketContract = new ethers.Contract(PocketContractAddress, abiPocket, Rpcprovider);
+
+  let title = await PocketContract.title();
+  let description = await PocketContract.description();
+  let targetAmount = await PocketContract.targetAmount();
+
+  const value = {
+    title: title,
+    description: description,
+    targetAmount:targetAmount
+  };
+  return value;
+
+}
+
+const contribute = async (PocketContractAddress, amountInMatic) => {
+  // Generate the data for the contract function call
+  const uoCallData = encodeFunctionData({
+    abi: abiPocket,
+    functionName: "contribute"
+  });
+  
+  provider.withAlchemyGasManager({
+    policyId: "5ae95b73-c385-4461-be66-1edfd394961c", // replace with your policy id
+  });
+
+  // Send the transaction
+  const uo = await provider.sendUserOperation({
+    target: PocketContractAddress, // Pocket contract
+    data: uoCallData,
+    value: ethers.utils.parseEther(amountInMatic)  // converts the ether string to wei
+  });
+  
+  // Wait for it to be mined and get the transaction hash
+  const txHash = await provider.waitForUserOperationTransaction(uo.hash);
+  
+  console.log("contributed! ",txHash, uo);
+}
+
+
+const sendFundsFromContract = async (PocketContractAddress, recipientAddress, amountInMatic) => {
+  // Generate the data for the contract function call
+  const uoCallData = encodeFunctionData({
+    abi: abiPocket,
+    functionName: "sendFunds",
+    args: [recipientAddress, ethers.utils.parseEther(amountInMatic)]
+  });
+  
+  provider.withAlchemyGasManager({
+    policyId: "5ae95b73-c385-4461-be66-1edfd394961c", // replace with your policy id
+  });
+
+  // Send the transaction
+  const uo = await provider.sendUserOperation({
+    target: PocketContractAddress, // Pocket contract
+    data: uoCallData
+    // Note: no msg.value here, the funds are coming from the contract's balance
+  });
+  
+  // Wait for it to be mined and get the transaction hash
+  const txHash = await provider.waitForUserOperationTransaction(uo.hash);
+  
+  console.log(txHash, uo);
+
+
+}
 
   const codeOfSafe = () => {
     // const safeAuthInitOptions = {
