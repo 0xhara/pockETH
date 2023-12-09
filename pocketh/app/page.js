@@ -264,7 +264,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen flex justify-center items-center min-w-screen">
-      <div>
+      {/* <div>
         <Card>
           <h1>magic -alchemy</h1>
           <button onClick={handleConnect}>Connect</button>
@@ -285,7 +285,7 @@ export default function Home() {
             <p>data is {data} </p>
           </div>
         </Card>
-      </div>
+      </div> */}
       <div className="flex flex-col gap-4">
         {/* <Button onClick={login}>Login</Button>
         <Button onClick={getUserInfo}>Get User Info</Button> */}
