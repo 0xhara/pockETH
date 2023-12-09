@@ -95,7 +95,6 @@ export default function RootLayout({ children }) {
             <rect fill="url(#b)" width="100%" height="100%" />
           </svg>
         </div>
-        <Header />
         {children}
       </body>
     </html>

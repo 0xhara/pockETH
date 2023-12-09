@@ -1,21 +1,24 @@
+"use client";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-const data = (set) => ({
+const userData = (set) => ({
   name: null,
   isLogged: false,
-  contractAddress: null,
+  smartContract: null,
   data: null,
-  updateSearchedUser: (user) => {
+  setSmartContract: (value) => set((state) => ({ smartContract: value })),
+  logOut: () => {
     set((state) => {
       return {
-        searchedUser: user,
+        smartContract: null,
+        isLogged: false,
       };
     });
   },
 });
 
-export const useData = create(persist(data, { name: "_data" }));
+export const useUserData = create(persist(userData, { name: "_data" }));
 
 // Do this to get the data
 

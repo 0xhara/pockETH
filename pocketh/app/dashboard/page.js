@@ -18,15 +18,63 @@ import { Label } from "@/components/ui/label";
 import { uploadFiles } from "@/lib/action/main";
 import { FolderPlus, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useUserData } from "@/lib/store";
+import { redirect } from "next/navigation";
+import { abi as abiFactory } from "../../lib/factoryAbi.json";
+
+const factoryAddress = "0xE84C255e649441b59d94f8488F54ba807FC27Df9";
 
 function page() {
   const pictureRef = useRef(null);
+
+  const [pockets, setPockets] = useState(null);
+
+  const [client, setClient] = useState();
+  const [address, setAddress] = useState();
   const dealParams = {
     num_copies: 2,
   };
   console.log(process.env.NEXT_PUBLIC_LIGHTHOUSE_API, "this is api");
 
+  // const cart = useCartStore((state) => state.cart);
+
+  // const address = useUserData((state) => state.smartContract);
+
+  useEffect(() => {
+    const getValue = () => {
+      const localAddress = localStorage.getItem("address");
+      if (localAddress == null) {
+        redirect("/");
+      }
+      // console.log(stored, "this local storage");
+
+      setAddress(localAddress);
+
+      const getClient = localStorage.getItem("client");
+
+      setClient(getClient);
+
+      // console.log(storeClient, "client");
+
+      readRequest();
+    };
+    getValue();
+  });
+
+  const readRequest = async () => {
+    const pockets = await client.readContract({
+      address: factoryAddress,
+      abi: abiFactory,
+      functionName: "getPocketsByOwner",
+      args: [address],
+    });
+    setPockets(pockets);
+  };
+
+  useEffect(() => {
+    console.log(pockets, "this is pockets");
+  }, [pockets]);
   const uploadFiles = async (url) => {
     console.log(url, "this is url");
     try {
