@@ -6,7 +6,9 @@ import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
 //from here
-import { AlchemyProvider, ethers } from "ethers";
+// import { AlchemyProvider, ethers } from "ethers";
+
+import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import { EthersAdapter, SafeFactory } from "@safe-global/protocol-kit";
 import {
   LightSmartContractAccount,
@@ -27,7 +29,7 @@ import {
 import { encodeFunctionData } from "viem";
 import { Card } from "@/components/ui/card";
 
-import { abi } from "../lib/Counter.json";
+import { abi } from "../lib/abi.json";
 const chain = polygonMumbai;
 
 import { Web3Auth } from "@web3auth/modal";
@@ -57,6 +59,8 @@ export default function Home() {
 
   //   const [web3AuthSigner,setWeb3AuthSigner]=useState(null);
 
+  console.log("client side abi ", chain);
+
   useEffect(() => {
     const init = async () => {
       await web3auth.initModal();
@@ -74,9 +78,10 @@ export default function Home() {
       //get Alchemy provider from web3Auth signer
       console.log("inside");
       const getProvider = async () => {
+        console.log("inside get provider", chain);
         const fetch_prov = new AlchemyProvider({
-          apiKey: "N_-JU1B2XbGAPiCpCE0CSv7Y9P5CFP-D",
           chain,
+          apiKey: "N_-JU1B2XbGAPiCpCE0CSv7Y9P5CFP-D",
         }).connect(
           (rpcClient) =>
             new LightSmartContractAccount({
