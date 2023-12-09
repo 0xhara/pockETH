@@ -33,6 +33,10 @@ import { abi } from "../lib/abi.json";
 const chain = polygonMumbai;
 
 import { Web3Auth } from "@web3auth/modal";
+import { Github, Leaf } from "lucide-react";
+import Link from "next/link";
+import Logo from "@/components/logo";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // see https://web3auth.io/docs/quick-start for more info
 const web3auth = new Web3Auth({
@@ -48,6 +52,9 @@ const web3auth = new Web3Auth({
     ticker: "MATIC",
   },
 });
+
+import m1 from "../public/m1.png";
+import FaqList from "@/components/faq";
 
 export default function Home() {
   const [provider, setProvider] = useState(null);
@@ -262,9 +269,113 @@ export default function Home() {
     // await protocolKit.executeTransaction(safeTransaction)
   };
 
+  const howItWorks = [
+    {
+      title: "Decentralized Ledger at Work",
+      description: "Explore the Inner Workings of our Blockchain DApp",
+      image:
+        "https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png",
+    },
+    {
+      title: "From Transactions to Transparency",
+      description:
+        "Unraveling the Mechanics of Seamless Financial Collaboration",
+      image:
+        "https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png",
+    },
+    {
+      title: "Empowering Users, Ensuring Security",
+      description:
+        "A Glimpse into the Functionality and Safety Measures of our Platform",
+      image:
+        "https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png",
+    },
+  ];
+
+  const expensePooling = [
+    {
+      title: "Pooling Finances for Shared Experiences",
+      description: "Effortless Fund Collection for Your Planned Events",
+      image:
+        "https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png",
+    },
+    {
+      title: "A Wallet for Every Occasion",
+      description:
+        "Simplify Budgeting with Our Intuitive Expense Pooling System",
+      image:
+        "https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png",
+    },
+    {
+      title: "From Contributions to Celebrations",
+      description:
+        "Bringing Your Group Together Through Smart Financial Planning",
+      image:
+        "https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png",
+    },
+  ];
+
+  const myArrayWithIcons = [
+    { item: "Rent", icon: "🏠" },
+    { item: "Vacation Funds", icon: "🏖" },
+    { item: "Sports Leagues", icon: "🏀" },
+    { item: "Gifts", icon: "🎁" },
+    { item: "Baby Showers", icon: "🍼" },
+    { item: "Teacher Appreciation", icon: "🧑‍🏫" },
+    { item: "Graduation Gifts", icon: "🎁" },
+    { item: "Class Reunions", icon: "🎓" },
+    { item: "Cash Registry", icon: "💸" },
+    { item: "Weddings", icon: "💍" },
+    { item: "Community Projects", icon: "🌻" },
+    { item: "Club Dues", icon: "👥" },
+    { item: "Emergency Funds", icon: "🚨" },
+    { item: "Memorials", icon: "💛" },
+    { item: "Bands", icon: "🎸" },
+    { item: "Netflix", icon: "🍿" },
+    { item: "Home Improvement Projects", icon: "🛠" },
+  ];
+
+  const faqList = [
+    {
+      question: "How do I begin using the platform?",
+      answer:
+        "To start, create an account and explore the intuitive features in your dashboard. Our onboarding process is designed to make your experience seamless.",
+    },
+    {
+      question: "How is my data secured on the platform?",
+      answer:
+        "We prioritize your security. Your data is encrypted, and we employ the latest security protocols to ensure the confidentiality and integrity of your information.",
+    },
+    {
+      question: "How do transactions work on the platform?",
+      answer:
+        "Transactions are straightforward. Simply navigate to the 'Transactions' section, choose the desired action, and follow the prompts. Our platform ensures transparency and efficiency.",
+    },
+    {
+      question: "Can I collaborate with others on financial activities?",
+      answer:
+        "Absolutely! Our platform is designed for collaborative financial activities. You can create shared wallets, split expenses, and manage funds seamlessly with your group.",
+    },
+    {
+      question: "How can I use the platform for event planning?",
+      answer:
+        "Plan your events effortlessly! Create an event-specific wallet, invite participants, and collect contributions. Track expenses and ensure a hassle-free financial experience during your event.",
+    },
+    {
+      question: "What if I encounter issues or have questions?",
+      answer:
+        "Our dedicated support team is here for you. Reach out through the 'Help' section, and we'll promptly assist you with any issues or queries you may have.",
+    },
+  ];
+
+  // Accessing elements in the array
+  console.log(myArrayWithIcons[0].item); // Outputs: Rent
+  console.log(myArrayWithIcons[0].icon); // Outputs: 🏠
+
   return (
-    <main className="min-h-screen flex justify-center items-center min-w-screen">
-      <div>
+    <>
+      <main className="min-h-screen flex flex-col justify-center items-center min-w-screen">
+        {/* <div>
         <Card>
           <h1>magic -alchemy</h1>
           <button onClick={handleConnect}>Connect</button>
@@ -285,34 +396,164 @@ export default function Home() {
             <p>data is {data} </p>
           </div>
         </Card>
-      </div>
-      <div className="flex flex-col gap-4">
-        {/* <Button onClick={login}>Login</Button>
+      </div> */}
+        <div className="flex flex-col gap-4">
+          {/* <Button onClick={login}>Login</Button>
         <Button onClick={getUserInfo}>Get User Info</Button> */}
-        {/* <Button onClick={providerDetails}>Provider</Button> */}
+          {/* <Button onClick={providerDetails}>Provider</Button> */}
 
-        {/* <span>safeAd</span> */}
-      </div>
-      <div className="flex gap-4 max-w-[1440px] w-full">
-        <div className="flex flex-col gap-4 items-start ">
-          <Badge>Team Name</Badge>
-          <span className="text-[4rem] font-bold monster">
-            Decentralized Expense Harmony
-          </span>
-          <span className="font-light">
-            Empower Your Group Finances with Blockchain for Seamless Event
-            Spending
-          </span>
+          {/* <span>safeAd</span> */}
+        </div>
+        <div className="flex gap-4 items-center min-h-[75vh] max-w-[1440px] w-full">
+          <div className="flex flex-col justify-center mt-[10rem] min-h-[600px] gap-4 items-start ">
+            <Badge>Team Name</Badge>
+            <span className="text-[4rem] font-bold monster">
+              Decentralized Expense Harmony
+            </span>
+            <span className="font-light">
+              Empower Your Group Finances with Blockchain for Seamless Event
+              Spending
+            </span>
 
-          <div className="flex mt-[2rem] gap-4">
-            <Button>Get Started</Button>
-            <Button variant="outlined">View Github</Button>
+            <div className="flex mt-[2rem] gap-4">
+              <Link href={"/login"}>
+                <Button className="flex gap-2 items-center">
+                  <Leaf /> Get Started
+                </Button>
+              </Link>
+              <Button className="flex gap-2 items-center" variant="outlined">
+                <Github />
+                View Code on Github
+              </Button>
+            </div>
+          </div>
+          <div>
+            <img src="https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png" />
           </div>
         </div>
-        <div>
-          <img src="https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png" />
+
+        <div className="w-full items-center flex flex-col gap-12 max-w-[1440px] mt-[8rem]">
+          <span className="text-[3rem] font-bold monster">
+            How does <Logo className={"text-[3rem]"} /> work?
+          </span>
+
+          <div className="w-full gap-12 grid grid-cols-3">
+            {howItWorks.map((_, i) => (
+              <>
+                <Card
+                  className="w-full  backdrop-blur-sm bg-white/20 border-black flex flex-col gap-4 p-4 pl-8 pr-8 min-h-[200px] hover:bg-slate-600 transition-all ease-in-out duration-300"
+                  key={i}
+                >
+                  <Avatar className="h-[4rem] w-[4rem]">
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  <span className="text-[1.5rem] font-bold monster">
+                    {_.title}
+                  </span>
+                  <span className="font-light">{_.description}</span>
+                </Card>
+              </>
+            ))}
+          </div>
+
+          <div className="w-full mt-[4rem] gap-8 mb-[4rem]">
+            <div className="flex items-center justify-center gap-4">
+              <div className="flex w-full flex-col gap-8">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <>
+                    <div className="flex flex-col gap-2">
+                      <span className="text-[1.5rem] font-bold monster">
+                        Stats Title
+                      </span>
+                      <span className="text-[1.25rem]">
+                        Stats description will go here with color
+                      </span>
+                    </div>
+                  </>
+                ))}
+              </div>
+              <img className="lg:w-[48%]" src={"m1.png"} />
+            </div>
+            <div className="flex items-center text-right flex-row-reverse justify-center gap-4">
+              <div className="flex w-full flex-col gap-8">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <>
+                    <div className="flex flex-col gap-2">
+                      <span className="text-[1.5rem] font-bold monster">
+                        Stats Title
+                      </span>
+                      <span className="text-[1.25rem]">
+                        Stats description will go here with color
+                      </span>
+                    </div>
+                  </>
+                ))}
+              </div>
+              <img className="lg:w-[48%]" src={"m1.png"} />
+            </div>
+          </div>
         </div>
-      </div>
-    </main>
+
+        <div className="mt-[4rem] max-w-[1440px] items-center flex flex-col gap-[4rem] mb-[4rem]">
+          <span className="text-[3rem] font-bold">
+            How can you use <Logo className={"text-[3rem]"} /> ?
+          </span>
+
+          <div className="w-[70%] flex items-center justify-center flex-wrap gap-6">
+            {myArrayWithIcons.map((_, i) => (
+              <>
+                <Card className="p-4 hover:bg-secondary monstser transition-all duration-200 ease-in-out cursor-pointer items-center justify-center pl-6 pr-6 text-[1.35rem] font-bold tracking-wider">
+                  {_.icon} {_.item}
+                </Card>
+              </>
+            ))}
+          </div>
+        </div>
+
+        <div className="w-full items-center flex flex-col gap-12 max-w-[1440px] mt-[4rem] mb-[4rem]">
+          <span className="text-[3rem] font-bold monster">
+            Expense Pooling Made Easy <span className="text-accent">!!</span>
+          </span>
+
+          <div className="w-full gap-12 grid grid-cols-3">
+            {expensePooling.map((_, i) => (
+              <>
+                <Card
+                  className="w-full  backdrop-blur-sm bg-white dark:text-black dark:hover:text-white  border-black flex flex-col gap-4 p-4 pl-8 pr-8 min-h-[200px] hover:bg-slate-600 transition-all ease-in-out duration-300"
+                  key={i}
+                >
+                  <Avatar className="h-[4rem] w-[4rem]">
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                  <span className="text-[1.5rem] font-bold monster">
+                    {_.title}
+                  </span>
+                  <span className="font-light">{_.description}</span>
+                </Card>
+              </>
+            ))}
+          </div>
+        </div>
+        <div className="w-full items-center flex flex-col gap-12 max-w-[1440px] mt-[4rem] mb-[4rem]">
+          <span className="text-[3rem] font-bold monster">
+            Frequently Asked <span className="text-accent">Questions</span>
+          </span>
+
+          <div className="w-full gap-12 flex flex-col">
+            {faqList.map((_, i) => (
+              <>
+                <FaqList title={_.question} content={_.answer} />
+              </>
+            ))}
+          </div>
+        </div>
+      </main>
+
+      <footer className="w-full flex items-end justify-center min-h-[400px] bg-black">
+        <div className="bg-white max-w-[1440px] w-full"></div>
+      </footer>
+    </>
   );
 }
