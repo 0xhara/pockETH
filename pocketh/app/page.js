@@ -266,13 +266,12 @@ export default function Home() {
     let title = await PocketContract.title();
     let description = await PocketContract.description();
     let targetAmount = await PocketContract.targetAmount();
-    let txData = await PocketContract.contributions();
+    // let txData = await PocketContract.contributions();
 
     const value = {
       title: title,
       description: description,
       targetAmount: targetAmount,
-      txData: txData,
     };
     return value;
   }
@@ -567,7 +566,7 @@ export default function Home() {
                 </Avatar>
               </div>
 
-              <Button onClick={addMoney}>Load Money</Button>
+              <Button>Load Money</Button>
               <Button onClick={handleDisconnect} className="">
                 Logout
               </Button>
