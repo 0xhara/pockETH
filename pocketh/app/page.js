@@ -793,7 +793,7 @@ export default function Home() {
                   <br />
                   <span className=" truncate text-[14px]">{address}</span>
                 </span>
-                <span className="text-[4rem] font-bold monster">0 ETH</span>
+                {/* <span className="text-[4rem] font-bold monster">0 ETH</span> */}
                 <div className="flex flex-col items-end justify-start">
                   <span>Available to Spend</span>
                   <Link className="text-blue-700" href={"/"}>
