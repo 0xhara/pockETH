@@ -567,7 +567,7 @@ export default function Home() {
                 </Avatar>
               </div>
 
-              <Button onClick={addMoney}>Load Money</Button>
+              {/* <Button onClick={addMoney}>Load Money</Button> */}
               <Button onClick={handleDisconnect} className="">
                 Logout
               </Button>
