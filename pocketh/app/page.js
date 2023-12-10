@@ -399,34 +399,34 @@ export default function Home() {
 
   const faqList = [
     {
-      question: "How do I begin using the platform?",
+      question: "Getting Started: How Can I Dive into PockETH?",
       answer:
-        "To start, create an account and explore the intuitive features in your dashboard. Our onboarding process is designed to make your experience seamless.",
+        "Simply sign up with your Google account, create or join a pool, and you’re set to start pooling funds with friends or family for any shared expense.",
     },
     {
-      question: "How is my data secured on the platform?",
+      question: "Securing Your Data: What Measures Are in Place on PockETH ?",
       answer:
-        "We prioritize your security. Your data is encrypted, and we employ the latest security protocols to ensure the confidentiality and integrity of your information.",
+        "We prioritize your data security by utilizing advanced encryption and secure protocols. All sensitive information is protected with the latest security measures.",
     },
     {
-      question: "How do transactions work on the platform?",
+      question: "Understanding Transactions: How Do They Work Here?",
       answer:
-        "Transactions are straightforward. Simply navigate to the 'Transactions' section, choose the desired action, and follow the prompts. Our platform ensures transparency and efficiency.",
+        "Transactions are seamless and flexible. You can contribute or spend from the pooled funds using either crypto or fiat currency, with every transaction being transparently tracked.",
     },
     {
-      question: "Can I collaborate with others on financial activities?",
+      question: "Can I Manage Finances with Others?",
       answer:
-        "Absolutely! Our platform is designed for collaborative financial activities. You can create shared wallets, split expenses, and manage funds seamlessly with your group.",
+        "Absolutely! You can invite others to collaborate on any financial activity, set permissions, and manage group expenses collectively.",
     },
     {
-      question: "How can I use the platform for event planning?",
+      question: "Event Planning with PockETH: How Can I Utilize It?",
       answer:
-        "Plan your events effortlessly! Create an event-specific wallet, invite participants, and collect contributions. Track expenses and ensure a hassle-free financial experience during your event.",
+        "Plan events effortlessly by pooling funds for expenses, tracking contributions in real-time, and managing event-related costs all in one place.",
     },
     {
-      question: "What if I encounter issues or have questions?",
+      question: "Need Help or Have Queries? How to Reach Out?",
       answer:
-        "Our dedicated support team is here for you. Reach out through the 'Help' section, and we'll promptly assist you with any issues or queries you may have.",
+        "If you face any issues or have questions, our dedicated support team is here to help. Reach out through our in-app support feature or contact us via our website.",
     },
   ];
 
@@ -545,7 +545,7 @@ export default function Home() {
         <Logo />
 
         <div className="lg:flex hidden  gap-4">
-          <Link href="https://github.com">
+          <Link href="https://github.com/srihar5ha/pocketh">
             <Button
               variant="outlined"
               className="border-white flex  gap-2 border"
@@ -635,13 +635,15 @@ export default function Home() {
                     <Leaf /> Get Started
                   </Button>
                   {/* </Link> */}
-                  <Button
-                    className="flex gap-2 border-[1px] border-white items-center"
-                    variant="outlined"
-                  >
-                    <Github />
-                    View Code on Github
-                  </Button>
+                  <Link href="https://github.com/srihar5ha/pocketh">
+                    <Button
+                      className="flex gap-2 border-[1px] border-white items-center"
+                      variant="outlined"
+                    >
+                      <Github />
+                      View Code on Github
+                    </Button>
+                  </Link>
                 </div>
               </div>
               {/* <div className="w-[70%] lg:w-auto">
