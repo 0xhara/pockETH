@@ -453,10 +453,6 @@ export default function Home() {
 
   const threeItemStat = [
     {
-      title: "Google Easy Contributions: Tap, Chip, and Go!",
-      des: "Seamlessly chip in for any group expense with just your Google account. Easy, fast, and hassle-free.",
-    },
-    {
       title: "Limitless Pools, Limitless Possibilities: Dive into Freedom!",
       des: "Start as many money pools as you like, free of charge, and manage group expenses without limits.",
     },
@@ -466,14 +462,6 @@ export default function Home() {
     },
   ];
   const threeItemStat2 = [
-    {
-      title: "Spend Globally, Pay Locally: The Crypto-Fiat Flexibility! ",
-      des: "Seamlessly chip in for any group expense with just your Google account. Easy, fast, and hassle-free.",
-    },
-    {
-      title: "Transaction Transparency: Watch Your Money Move!",
-      des: "Stay updated with real-time notifications and detailed monthly statements to track every contribution and spend.",
-    },
     {
       title: "Pool Power, Shared or Solo: You’re in Command!",
       des: "Run your pool your way – solo or as a team. Invite collaborators, set permissions, manage spending limits, and more for complete control.",
