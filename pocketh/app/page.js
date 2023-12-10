@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 //from here
 // import { AlchemyProvider, ethers } from "ethers";
 
+import { StripeAdapter } from "@stripe/stripe-js";
+
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import {
   LightSmartContractAccount,
@@ -506,6 +508,38 @@ export default function Home() {
     }
   }, [address]);
 
+  // const stripePack = new StripePack({
+  //   // Get public key from Stripe: https://dashboard.stripe.com/register
+  //   stripePublicKey:
+  //     "pk_test_51MZbmZKSn9ArdBimSyl5i8DqfcnlhyhJHD8bF2wKrGkpvNWyPvBAYtE211oHda0X3Ea1n4e9J9nh2JkpC7Sxm5a200Ug9ijfoO",
+  //   // Deploy your own server: https://github.com/5afe/aa-stripe-service
+  //   onRampBackendUrl: "https://aa-stripe.safe.global",
+  // });
+  // //await stripePack.init()
+  // // See options for using the StripePack open method in:
+  // // https://stripe.com/docs/crypto/using-the-api
+  // const addMoney = async () => {
+  //   const sessionData = await stripePack.open({
+  //     element: "#stripe-root", // Can be any CSS selector
+  //     theme: "light", // light | dark
+  //     // Optional, if you want to use a specific created session
+  //     // ---
+  //     // sessionId: 'cos_1Mei3cKSn9ArdBimJhkCt1XC',
+  //     // Optional, if you want to specify default options
+  //     // ---
+  //     // defaultOptions: {
+  //     // transaction_details: {
+  //     //   wallet_address: walletAddress,
+  //     //   lock_wallet_address: true
+  //     //   supported_destination_networks: ['ethereum', 'polygon'],
+  //     //   supported_destination_currencies: ['usdc'],
+  //     // },
+  //     // customer_information: {
+  //     //   email: 'john@doe.com'
+  //     // }
+  //   });
+  // };
+
   return (
     <>
       <header className="w-full z-[999] justify-between backdrop-blur-xl flex items-center top-0 left-0 right-0 sticky p-4 lg:pl-[4rem] lg:pr-[4rem]">
@@ -533,6 +567,7 @@ export default function Home() {
                 </Avatar>
               </div>
 
+              <Button onClick={addMoney}>Load Money</Button>
               <Button onClick={handleDisconnect} className="">
                 Logout
               </Button>
@@ -583,13 +618,13 @@ export default function Home() {
             </div>
             <div className="flex lg:flex-row flex-col-reverse p-4 lg:p-0 lg:gap-4 items-center lg:min-h-[75vh] max-w-[1440px] w-full">
               <div className="flex flex-col justify-center lg:mt-[10rem] min-h-[500px] lg:min-h-[600px] gap-4 items-start ">
-                <Badge>Team Name</Badge>
-                <span className=" text-[2rem] lg:text-[4rem] font-bold monster">
-                  Decentralized Expense Harmony
+                {/* <Badge>Team Name</Badge> */}
+                <span className=" text-[2rem] lg:text-[3.5rem] font-bold monster">
+                  Pool to Plan, Plan to Prosper
                 </span>
-                <span className="font-light text-[14px] lg:text-normal">
-                  Empower Your Group Finances with Blockchain for Seamless Event
-                  Spending
+                <span className="font-light text-[14px] lg:text-[1.2rem]">
+                  pockETH is the easiest way to pool money. <br />
+                  Collect money with just a link and manage it solo or together.
                 </span>
 
                 <div className="flex lg:flex-row flex-col mt-[2rem] gap-4">
@@ -610,9 +645,9 @@ export default function Home() {
                   </Button>
                 </div>
               </div>
-              <div className="w-[70%] lg:w-auto">
+              {/* <div className="w-[70%] lg:w-auto">
                 <img src="https://www.freepngimg.com/thumb/bitcoin/63394-cryptocurrency-money-ethereum-bitcoin-download-hd-png.png" />
-              </div>
+              </div> */}
             </div>
 
             <div className="w-full items-center flex flex-col gap-12 max-w-[1440px] mt-[4rem] lg:mt-[8rem]">
@@ -623,19 +658,19 @@ export default function Home() {
 
               <div className="w-full gap-12 grid grid-cols-1 p-4 lg:p-0 lg:grid-cols-3">
                 {howItWorks.map((_, i) => (
-                  <Card
-                    className="w-full  backdrop-blur-sm bg-white/20 border-black flex flex-col gap-4 p-4 pl-8 pr-8 min-h-[200px] hover:bg-slate-600 transition-all ease-in-out duration-300"
+                  <div
+                    className="w-full text-center items-center backdrop-blur-sm bg-white/5 border-black flex flex-col gap-4 p-8 pl-8 pr-8 min-h-[200px] hover:bg-slate-600 transition-all ease-in-out duration-300"
                     key={i}
                   >
                     <Avatar className="h-[5rem] w-[5rem]">
                       <AvatarImage src="https://github.com/shadcn.png" />
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
-                    <span className="text-[1.5rem] font-bold monster">
+                    <span className="text-[1.5rem] text-center font-bold monster">
                       {_.title}
                     </span>
                     <span className="font-light">{_.description}</span>
-                  </Card>
+                  </div>
                 ))}
               </div>
 
