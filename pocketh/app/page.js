@@ -736,7 +736,7 @@ export default function Home() {
               <div className="w-full gap-12 grid lg:grid-cols-3">
                 {expensePooling.map((_, i) => (
                   <Card
-                    className="w-full  backdrop-blur-sm bg-white dark:text-black dark:hover:text-white  border-black flex flex-col gap-4 p-4 pl-8 pr-8 min-h-[200px] hover:bg-slate-600 transition-all ease-in-out duration-300"
+                    className="w-full items-center text-center p-8  backdrop-blur-sm bg-white dark:text-black dark:hover:text-white  border-black flex flex-col gap-4  pl-8 pr-8 min-h-[200px] hover:bg-slate-600 transition-all ease-in-out duration-300"
                     key={i}
                   >
                     <Avatar className="h-[4rem] w-[4rem]">
